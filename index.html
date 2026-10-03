@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v12.6 MT Logo Fix</title>
+<title>Birikim Hedefi • v12.7 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -617,6 +617,41 @@ function closeAsset(){$('assetModal').classList.add('hidden');editAssetId=null}
 function saveAsset(){let d=privateData(session.username),type=$('aType').value,amount=moneyVal($('aAmount').value),price=moneyVal($('aPrice').value),note=$('aNote').value.trim(),m=$('assetMsg');if(!type||amount<=0||price<0){m.textContent='Miktar ve geçerli birim fiyat girin.';return}if(editAssetId){let a=d.assets.find(x=>x.id===editAssetId);if(a){a.type=type;a.amount=amount;if(typeof a.costPrice!=='number')a.costPrice=Number(a.price)||price;a.price=price;a.note=note;a.autoPrice=false}}else d.assets.push({id:'a'+Date.now().toString(36),type,amount,price,costPrice:price,note,autoPrice:false});savePrivate(session.username,d);closeAsset();renderUser()}
 function deleteAsset(id){let d=privateData(session.username),a=d.assets.find(x=>x.id===id);if(!a||!confirm(a.type+' kaydını silmek istiyor musunuz?'))return;d.assets=d.assets.filter(x=>x.id!==id);savePrivate(session.username,d);renderUser()}
 
+
+async function fetchErzurumGoldPrices(){
+  // Önce Erzurum/Taşhan sayfasını doğrudan dene.
+  const url='https://altinasistani.com/erzurum-altin-fiyatlari';
+  let html='';
+  try{
+    const r=await fetch(url,{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    html=await r.text();
+  }catch(e){
+    // Statik GitHub sayfalarında kaynak CORS'u engellerse salt-okunur metin geçidi.
+    const r=await fetch('https://r.jina.ai/http://altinasistani.com/erzurum-altin-fiyatlari',{cache:'no-store'});
+    if(!r.ok) throw new Error('Erzurum fiyat kaynağına ulaşılamadı');
+    html=await r.text();
+  }
+  const clean=x=>String(x||'').replace(/\./g,'').replace(',','.').replace(/[^\d.]/g,'');
+  const take=(label)=>{
+    const esc=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const m=html.match(new RegExp(esc+'\\s*(?:Alış)?\\s*[:|]?\\s*([\\d.]+,\\d{2})\\s*(?:TL)?','i'));
+    return m?Number(clean(m[1])):null;
+  };
+  return {
+    'Gram Altın':take('Gram Altın Alış'),
+    'Çeyrek Altın':take('Çeyrek Altın Alış'),
+    '22 Ayar Bilezik':take('22 Ayar Bilezik Alış'),
+    '18 Ayar Altın':take('18 Ayar Altın Alış'),
+    '14 Ayar Altın':take('14 Ayar Altın Alış'),
+    'Ata Altın':take('Ata Altın Alış'),
+    'Reşat Altını':take('Reşat Altın Alış'),
+    'Yarım Altın':take('Yarım Altın Alış'),
+    'Tam Altın':take('Tam Altın Alış'),
+    'Cumhuriyet Altını':take('Cumhuriyet Altını Alış'),
+    'Gremse Altın':take('Gremse Altın Alış')
+  };
+}
 async function refreshPrices(showMessage=false){
  if(!session||session.role!=='user')return;
  let d=privateData(session.username), changed=false, errors=[], goldUpdated=0, fxUpdated=0;
@@ -711,6 +746,29 @@ async function refreshPrices(showMessage=false){
    errors.push('altın');
  }
 
+ // Erzurum/Taşhan yerel alış (bozdurma) fiyatı: genel fiyatın üstüne öncelikli olarak uygulanır.
+ try{
+   const erz=await fetchErzurumGoldPrices();
+   let localCount=0;
+   d.assets.forEach(a=>{
+     let type=String(a.type||'');
+     if(type==='24 Ayar Gram Altın')type='Gram Altın';
+     if(type==='Ata Altını')type='Ata Altın';
+     const p=erz[type];
+     if(Number.isFinite(p)&&p>0){
+       a.type=type; a.price=p; a.liveReference=p; a.autoPrice=true;
+       a.priceSource='Erzurum / Taşhan'; localCount++; changed=true;
+     }
+   });
+   if(localCount){
+     goldUpdated=localCount;
+     d._lastGold={source:'Erzurum / Taşhan • altinasistani.com',date:new Date().toISOString()};
+   }else errors.push('Erzurum fiyat eşleştirme');
+ }catch(e){
+   console.warn('Erzurum fiyatı alınamadı; genel fiyat korundu:',e);
+   errors.push('Erzurum yerel fiyat');
+ }
+
  if(changed){
    d._lastPriceUpdate=new Date().toISOString();
    savePrivate(session.username,d);
@@ -719,7 +777,7 @@ async function refreshPrices(showMessage=false){
  let dd=privateData(session.username);
  if(dd._lastPriceUpdate){
    $('priceStatus').textContent='Son güncelleme: '+new Date(dd._lastPriceUpdate).toLocaleString('tr-TR')+
-     ` • ${goldUpdated} altın, ${fxUpdated} döviz`;
+     ` • Erzurum/Taşhan • ${goldUpdated} altın, ${fxUpdated} döviz`;
  }else $('priceStatus').textContent='Fiyatlar: manuel';
 
  if(showMessage){
