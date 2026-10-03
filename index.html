@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090d18">
+<title>Birikim Hedefi • v11.1 Cloud</title>
+<style>
+:root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
+button,input{font:inherit}.hidden{display:none!important}.app{max-width:1160px;margin:auto;padding:24px 18px 60px}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(430px,100%);padding:30px;background:rgba(16,24,39,.96);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}
+.logo{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--green));font-size:28px;margin-bottom:20px}.login-card h1{margin:0;font-size:30px;letter-spacing:-1px}.login-card p{color:var(--muted);margin:8px 0 24px}
+label{display:block;color:#c9d2e2;font-size:13px;font-weight:800;margin:13px 0 7px}.input{width:100%;border:1px solid var(--line);background:#0b1220;color:var(--text);padding:13px 14px;border-radius:13px;outline:none}.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,156,255,.12)}
+.btn{border:0;border-radius:13px;padding:12px 15px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--accent),#b1c0ff);color:#07101e}.btn.full{width:100%;margin-top:18px}.btn.secondary{background:#182338;color:var(--text);border:1px solid var(--line)}.btn.danger{background:#351923;color:#ff9baa;border:1px solid #5c2935}.btn.small{padding:8px 10px;font-size:12px}
+.msg{min-height:20px;margin-top:12px;font-size:13px;color:var(--red)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:24px}.brand h1{margin:0;font-size:clamp(25px,4vw,38px);letter-spacing:-1px}.brand p{margin:5px 0 0;color:var(--muted)}.top-actions{display:flex;gap:8px;align-items:center}.badge{padding:8px 11px;border:1px solid var(--line);border-radius:999px;color:#c9d4e8;background:#111a2a;font-size:12px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:13px}.card{background:linear-gradient(180deg,rgba(20,31,49,.96),rgba(13,20,33,.97));border:1px solid var(--line);border-radius:21px;padding:19px;box-shadow:var(--shadow)}.stat-label{color:var(--muted);font-size:12px;font-weight:800}.stat-value{font-size:clamp(20px,3vw,30px);font-weight:950;margin-top:6px;letter-spacing:-.7px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:27px 2px 12px;gap:10px}.section-head h2{margin:0;font-size:19px}.section-head span{color:var(--muted);font-size:12px}
+.goal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.goal-title{font-size:20px;font-weight:950}.goal-sub{color:var(--muted);font-size:12px;margin-top:4px}.money-row{display:flex;justify-content:space-between;margin-top:18px;font-weight:850}.money-row span:last-child{color:var(--muted)}.bar{height:11px;background:#0a111e;border-radius:99px;overflow:hidden;margin:10px 0}.fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:99px}.goal-bottom{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;gap:10px}.goal-actions{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.empty{text-align:center;padding:45px 20px;color:var(--muted)}.empty b{display:block;color:var(--text);font-size:18px;margin-bottom:6px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.66);display:grid;place-items:center;padding:18px;z-index:20}.modal{width:min(470px,100%);background:#111a2a;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.modal h3{margin:0 0 6px}.modal p{color:var(--muted);font-size:13px;margin:0 0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.admin-grid{display:grid;grid-template-columns:340px 1fr;gap:15px}.admin-title{margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.users{display:flex;flex-direction:column;gap:9px}.user-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#0d1523}.user-name{font-weight:900}.user-meta{color:var(--muted);font-size:11px;margin-top:3px}.row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.privacy{padding:14px;border:1px solid rgba(88,223,173,.25);background:rgba(88,223,173,.06);border-radius:15px;color:#bfeedd;font-size:12px;margin-top:15px}
+.history{display:flex;flex-direction:column;gap:8px}.hist{display:flex;justify-content:space-between;gap:10px;padding:12px 13px;background:#0d1523;border:1px solid var(--line);border-radius:14px}.hist b{font-size:13px}.hist small{display:block;color:var(--muted);margin-top:3px}.plus{color:var(--green)}.minus{color:var(--red)}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.goal-grid,.admin-grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;justify-content:space-between}.admin-grid{gap:12px}}
+@media(max-width:460px){.stats{grid-template-columns:1fr 1fr}.card{padding:15px}.app{padding:18px 12px 45px}.goal-bottom{align-items:flex-start;flex-direction:column}}
+
+/* v8 Premium */
+:root{--bg:#070b14;--panel:#0e1524;--panel2:#121c2f;--line:#23304a;--text:#f5f7fb;--muted:#8fa0bc;--accent:#d7b35a;--accent2:#7bdcb5;--danger:#ff6b78}
+body{background:
+radial-gradient(circle at 15% 0%,rgba(215,179,90,.10),transparent 28%),
+radial-gradient(circle at 90% 10%,rgba(76,126,255,.10),transparent 26%),var(--bg)}
+.card,.modal,.login-card{background:linear-gradient(145deg,rgba(18,28,47,.96),rgba(11,17,30,.96));border:1px solid rgba(255,255,255,.07);box-shadow:0 16px 45px rgba(0,0,0,.22)}
+.topbar{background:rgba(7,11,20,.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.07)}
+.btn{border-radius:12px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.16)}
+.stat-value{letter-spacing:-.7px}
+.goal-grid{gap:16px}.goal-title{font-size:17px}.progress{height:9px}
+.section-head{margin-top:28px}
+.asset-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:rgba(215,179,90,.10);border:1px solid rgba(215,179,90,.18);font-size:11px;font-weight:800}
+.portfolio-hero{margin:18px 0 8px;padding:22px;border-radius:20px;background:linear-gradient(135deg,rgba(215,179,90,.14),rgba(59,92,170,.10));border:1px solid rgba(215,179,90,.20);display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap}
+.portfolio-hero .big{font-size:30px;font-weight:900;letter-spacing:-1px;margin-top:4px}
+.portfolio-hero .sub{color:var(--muted);font-size:12px}
+
+
+/* ===== v9 APPLE FINANCE ===== */
+:root{
+ --bg:#050505;--panel:#101112;--panel2:#171819;--line:#292a2c;
+ --text:#f5f5f7;--muted:#98989d;--accent:#d7b45a;--accent2:#78d59f;
+ --danger:#ff5d68;--gold:#e1bd62;
+}
+*{box-sizing:border-box}
+html{background:#050505}
+body{background:
+ radial-gradient(circle at 70% -10%,rgba(225,189,98,.09),transparent 28%),
+ linear-gradient(180deg,#070707 0%,#030303 100%);color:var(--text);min-height:100vh}
+.topbar{background:rgba(5,5,5,.82);border-bottom:1px solid rgba(255,255,255,.07);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.card,.modal,.login-card{background:linear-gradient(145deg,rgba(24,24,25,.94),rgba(13,13,14,.96));border:1px solid rgba(255,255,255,.075);box-shadow:0 18px 50px rgba(0,0,0,.32);border-radius:18px}
+.btn{background:linear-gradient(180deg,#e4c46f,#cda548);color:#111;border:0;border-radius:12px;font-weight:850;box-shadow:none}
+.btn:hover{filter:brightness(1.06)}
+.btn.secondary{background:#202123;color:#f5f5f7;border:1px solid #303135}
+.btn.danger{background:rgba(255,93,104,.11);color:#ff737d;border:1px solid rgba(255,93,104,.2)}
+.input,select.input{background:#121314!important;border:1px solid #303134!important;color:#f5f5f7!important;border-radius:12px}
+.input:focus,select.input:focus{border-color:#d7b45a!important;box-shadow:0 0 0 3px rgba(215,180,90,.10)}
+.stat-label{color:#88898e;letter-spacing:.09em}.stat-value{color:#f7f7f8}
+.progress{background:#28292b}.progress>i{background:linear-gradient(90deg,#cba64e,#f0d47c)}
+.portfolio-hero{background:
+ radial-gradient(circle at 90% 15%,rgba(215,180,90,.18),transparent 28%),
+ linear-gradient(135deg,#171817,#0d0e0e);border:1px solid rgba(215,180,90,.18);border-radius:22px}
+.portfolio-hero .big{font-size:34px}
+.asset-badge{background:rgba(215,180,90,.09);border-color:rgba(215,180,90,.18);color:#e8c86f}
+.goal-grid .card{transition:transform .18s ease,border-color .18s ease}.goal-grid .card:hover{transform:translateY(-2px);border-color:rgba(215,180,90,.22)}
+.hist{border-bottom-color:#242527}
+.apple-brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.3px}
+.apple-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#e7ca78,#b88e34);display:grid;place-items:center;color:#111;font-size:18px}
+.mobile-nav{display:none}
+.mobile-page-title{display:none}
+@media(max-width:700px){
+ body{padding-bottom:78px}
+ .container{padding-left:12px!important;padding-right:12px!important}
+ .topbar{min-height:58px}.topbar .brand-sub{display:none}
+ .portfolio-hero{padding:18px;margin-top:12px}.portfolio-hero .big{font-size:27px}
+ .stats{grid-template-columns:1fr 1fr!important;gap:9px!important}
+ .stats .card{padding:14px!important;min-height:112px}
+ .stat-value{font-size:19px!important}
+ .section-head{margin-top:23px}
+ .goal-grid{grid-template-columns:1fr!important}
+ .goal-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:7px}
+ .goal-actions .btn{width:100%}
+ .hist{align-items:flex-start!important;gap:9px}.hist>div:last-child{max-width:48%}
+ .modal-bg{align-items:flex-end!important;padding:0!important}
+ .modal{width:100%!important;max-width:none!important;border-radius:22px 22px 0 0!important;max-height:88vh;overflow:auto;padding-bottom:28px!important}
+ .mobile-nav{position:fixed;display:grid;grid-template-columns:repeat(4,1fr);left:0;right:0;bottom:0;height:68px;background:rgba(8,8,9,.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-top:1px solid #242527;z-index:80;padding-bottom:env(safe-area-inset-bottom)}
+ .mobile-nav button{background:none;border:0;color:#8c8d92;font-size:10px;font-weight:750;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+ .mobile-nav button span{font-size:20px}.mobile-nav button.active{color:#e2bd61}
+ .mobile-page-title{display:block;font-size:12px;color:#8d8e92;margin-top:5px}
+}
+
+</style>
+
+<style id="v10-style">
+.v10-shell{min-height:100vh;padding:0!important;max-width:none!important;background:#070808}.v10-side{position:fixed;left:0;top:0;bottom:0;width:220px;background:#090a0a;border-right:1px solid #202122;padding:24px 16px;display:flex;flex-direction:column;z-index:30}.v10-logo{display:flex;align-items:center;gap:11px;font-size:18px;margin:0 8px 34px}.v10-logo span,.v10-avatar{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#e7c76c,#a97e28);color:#111;display:grid;place-items:center;font-size:20px}.v10-side nav{display:grid;gap:7px}.v10-side nav button,.v10-side-bottom button{border:0;background:transparent;color:#85868a;text-align:left;padding:12px 13px;border-radius:11px;font-weight:750;display:flex;gap:12px;align-items:center;cursor:pointer}.v10-side nav button i{font-style:normal;font-size:19px;width:22px;text-align:center}.v10-side nav button.active{background:#1b1b19;color:#e2bd61}.v10-side-bottom{margin-top:auto;display:grid;gap:5px}.v10-main{margin-left:220px;min-height:100vh;padding:0 30px 50px}.v10-head{height:84px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1d1e1f;position:sticky;top:0;background:rgba(7,8,8,.88);backdrop-filter:blur(18px);z-index:20}.v10-head h1{font-size:19px;margin:3px 0 0}.v10-eyebrow,.v10-kicker,.v10-title span,.v10-panel-head span{font-size:10px;letter-spacing:.12em;color:#77787c;font-weight:850}.v10-head-actions{display:flex;align-items:center;gap:10px}.v10-icon{width:38px;height:38px;border-radius:12px;border:1px solid #2b2c2d;background:#141515;color:#ddd;font-size:18px;cursor:pointer}.v10-page{display:none;padding-top:24px}.v10-page.active{display:block}.v10-hero{min-height:245px;border:1px solid #29271f;border-radius:24px;background:radial-gradient(circle at 90% 20%,rgba(216,181,87,.16),transparent 30%),linear-gradient(135deg,#161714,#0d0e0e);padding:30px;display:grid;grid-template-columns:1fr 1.15fr;align-items:center;overflow:hidden}.v10-total{font-size:42px;font-weight:900;letter-spacing:-1.8px;margin:9px 0}.v10-muted{color:#8d8e92;font-size:12px}.v10-chart{height:150px;align-self:end}.v10-chart svg{width:100%;height:100%}.v10-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.v10-summary article{background:#111213;border:1px solid #242527;border-radius:18px;padding:18px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center}.v10-summary article span{color:#8e8f93;font-size:12px}.v10-summary article strong{font-size:21px;grid-column:2}.v10-summary article button{grid-column:1/-1;margin-top:10px;background:transparent;border:0;color:#d8b557;text-align:left;padding:0;font-weight:800;cursor:pointer}.v10-sicon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:19px;grid-row:1/3}.v10-sicon.blue{background:#122339;color:#67aaff}.v10-sicon.gold{background:#302713;color:#e7bd50}.v10-sicon.green{background:#122a20;color:#72d49e}.v10-grid2{display:grid;grid-template-columns:1.35fr .85fr;gap:14px;margin-top:14px}.v10-panel{background:#101112;border:1px solid #242527;border-radius:20px;padding:20px}.v10-panel-head,.v10-title,.v10-asset-head{display:flex;align-items:center;justify-content:space-between;gap:15px}.v10-panel-head h2,.v10-title h2{margin:4px 0 0}.v10-panel-head button,.v10-asset-head button{background:transparent;border:0;color:#d8b557;font-weight:800;cursor:pointer}.v10-home-goals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.v10-mini-goal{padding:15px;border-radius:15px;background:#171819;border:1px solid #292a2b}.v10-mini-goal strong{display:block;font-size:15px;margin-bottom:10px}.v10-mini-goal small{color:#898a8e}.v10-mini-bar{height:5px;background:#2a2b2c;border-radius:8px;overflow:hidden;margin-top:10px}.v10-mini-bar i{display:block;height:100%;background:#d8b557}.v10-donut-wrap{display:flex;align-items:center;justify-content:center;gap:24px;min-height:190px}.v10-donut{width:140px;height:140px;border-radius:50%;display:grid;place-items:center;align-content:center;position:relative;background:conic-gradient(#d8b557 0 45%,#4a91ff 45% 75%,#57c88a 75% 100%)}.v10-donut:after{content:'';position:absolute;inset:17px;background:#101112;border-radius:50%}.v10-donut b,.v10-donut small{z-index:1}.v10-donut b{font-size:16px}.v10-donut small{font-size:9px;color:#888}.v10-legend{display:grid;gap:12px;font-size:12px}.v10-legend div{display:grid;grid-template-columns:auto 1fr;gap:3px 8px}.v10-legend b{grid-column:2}.v10-legend i{width:8px;height:8px;border-radius:50%;margin-top:4px}.gold-dot{background:#d8b557}.blue-dot{background:#4a91ff}.cash-dot{background:#57c88a}.v10-title{margin-bottom:18px}.v10-inline{display:flex;gap:8px}.v10-asset-head{margin:24px 0 12px}.v10-asset-head h3{margin:0}.v10-history{background:#101112;border:1px solid #242527;border-radius:18px;padding:4px 18px}.goal-grid .card{background:#111213!important;border-color:#262729!important}.bar{height:7px!important;background:#28292b!important}.fill{background:linear-gradient(90deg,#b78c31,#e6c768)!important}
+@media(max-width:900px){.v10-side{width:180px}.v10-main{margin-left:180px;padding:0 18px 40px}.v10-grid2{grid-template-columns:1fr}.v10-hero{grid-template-columns:1fr}.v10-chart{height:100px}.v10-summary{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:700px){body{padding-bottom:74px}.v10-shell{padding:0!important}.v10-side{position:fixed;top:auto;bottom:0;left:0;right:0;width:auto;height:70px;padding:0 8px;display:block;border-right:0;border-top:1px solid #272829;background:rgba(8,9,9,.96);backdrop-filter:blur(18px);z-index:100}.v10-logo,.v10-side-bottom{display:none}.v10-side nav{height:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:0}.v10-side nav button{padding:7px 2px;border-radius:0;display:flex;flex-direction:column;justify-content:center;gap:3px;text-align:center;font-size:9px}.v10-side nav button i{font-size:19px;width:auto}.v10-side nav button.active{background:transparent;color:#e2bd61}.v10-main{margin-left:0;padding:0 12px 24px}.v10-head{height:66px}.v10-head .v10-eyebrow{display:none}.v10-head h1{font-size:16px}.v10-avatar{width:34px;height:34px}.v10-page{padding-top:12px}.v10-hero{min-height:200px;padding:20px;border-radius:20px}.v10-total{font-size:30px}.v10-chart{height:75px;margin-top:10px}.v10-summary{grid-template-columns:repeat(3,1fr);gap:7px}.v10-summary article{padding:11px;display:block;min-height:120px}.v10-summary article .v10-sicon{width:34px;height:34px;margin-bottom:9px}.v10-summary article span{display:block;font-size:10px}.v10-summary article strong{display:block;font-size:14px;margin-top:4px}.v10-summary article button{font-size:9px;margin-top:9px}.v10-grid2{grid-template-columns:1fr;gap:10px;margin-top:10px}.v10-panel{padding:15px;border-radius:17px}.v10-home-goals{grid-template-columns:1fr 1fr}.v10-donut-wrap{min-height:165px}.v10-donut{width:120px;height:120px}.v10-title{align-items:flex-start;flex-direction:column}.v10-title .v10-inline{width:100%;display:grid;grid-template-columns:1fr 1fr}.v10-title .btn{width:100%}.goal-grid{grid-template-columns:1fr!important}.modal-bg{z-index:150!important}}
+</style>
+</head>
+<body>
+<section id="loginView" class="login-wrap">
+ <div class="login-card">
+  <div class="logo">💰</div>
+  <div id="setupBox" class="hidden">
+   <h1>İlk Kurulum</h1><p>Bu cihaz için yönetici hesabınızı oluşturun. Varsayılan yönetici şifresi yoktur.</p>
+   <label>Yönetici kullanıcı adı</label><input id="setupUser" class="input" autocomplete="username" placeholder="Yönetici kullanıcı adı">
+   <label>Yönetici şifresi</label><input id="setupPass" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter">
+   <label>Şifre tekrar</label><input id="setupPass2" class="input" type="password" autocomplete="new-password" placeholder="Şifreyi tekrar girin">
+   <button class="btn full" onclick="createAdmin()">Yönetici Hesabını Oluştur</button><div id="setupMsg" class="msg"></div>
+  </div>
+  <div id="loginBox">
+   <div style="width:54px;height:54px;margin:0 auto 14px;border-radius:16px;background:linear-gradient(145deg,#e7ca78,#b88e34);display:grid;place-items:center;color:#111;font-size:25px">♛</div><h1>Birikim Hedefi</h1><p>Kişisel hedeflerinize giriş yapın.</p>
+   <label>Kullanıcı adı</label><input id="loginUser" class="input" autocomplete="username" placeholder="Kullanıcı adınız">
+   <label>Şifre</label><input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••">
+   <button class="btn full" onclick="login()">Giriş Yap</button><div id="loginMsg" class="msg"></div>
+  </div>
+ </div>
+</section>
+
+<section id="userView" class="app hidden v10-shell">
+ <aside class="v10-side">
+  <div class="v10-logo"><span>♛</span><b>Birikim</b></div>
+  <nav>
+   <button class="active" data-tab="home" onclick="v10Tab('home',this)"><i>⌂</i>Ana Sayfa</button>
+   <button data-tab="goals" onclick="v10Tab('goals',this)"><i>◎</i>Hedefler</button>
+   <button data-tab="assets" onclick="v10Tab('assets',this)"><i>◈</i>Varlıklar</button>
+   <button data-tab="history" onclick="v10Tab('history',this)"><i>≡</i>İşlemler</button>
+  </nav>
+  <div class="v10-side-bottom"><button onclick="openOwnPass()">⚙ Şifre</button><button onclick="logout()">↪ Çıkış</button></div>
+ </aside>
+ <main class="v10-main">
+  <header class="v10-head"><div><div class="v10-eyebrow">KİŞİSEL PORTFÖY</div><h1 id="hello">Hoş geldin</h1></div><div class="v10-head-actions"><button class="v10-icon" onclick="refreshPrices(true)" title="Fiyatları güncelle">↻</button><div class="v10-avatar">♛</div></div></header>
+
+  <section class="v10-page active" data-page="home">
+   <div id="homeAnchor" class="v10-hero">
+    <div><div class="v10-kicker">TOPLAM PORTFÖY DEĞERİ</div><div id="portfolioTotal" class="v10-total">0,00 ₺</div><div id="priceStatus" class="v10-muted">Fiyatlar: manuel</div></div>
+    <div class="v10-chart"><svg viewBox="0 0 360 110" preserveAspectRatio="none"><defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8b557" stop-opacity=".25"/><stop offset="1" stop-color="#d8b557" stop-opacity="0"/></linearGradient></defs><path d="M0,86 C35,82 42,61 75,66 S125,78 150,55 S190,68 216,42 S260,55 286,30 S326,40 360,14 L360,110 L0,110Z" fill="url(#area)"/><path d="M0,86 C35,82 42,61 75,66 S125,78 150,55 S190,68 216,42 S260,55 286,30 S326,40 360,14" fill="none" stroke="#d8b557" stroke-width="3" stroke-linecap="round"/></svg></div>
+   </div>
+   <div class="v10-summary">
+    <article><div class="v10-sicon blue">▣</div><span>Nakit</span><strong id="sCash">0,00 ₺</strong><button onclick="openCash()">+ Para Ekle</button></article>
+    <article><div class="v10-sicon gold">◆</div><span>Altın + Döviz</span><strong id="sAssets">0,00 ₺</strong><button onclick="v10Tab('assets')">Varlıkları Gör</button></article>
+    <article><div class="v10-sicon green">◎</div><span>Hedeflerde</span><strong id="sSaved">0,00 ₺</strong><button onclick="v10Tab('goals')">Hedefleri Gör</button></article>
+   </div>
+   <div class="v10-grid2">
+    <section class="v10-panel"><div class="v10-panel-head"><div><span>HEDEFLER</span><h2>Hedeflerim</h2></div><button onclick="openGoal()">+ Yeni Hedef</button></div><div id="homeGoals" class="v10-home-goals"></div></section>
+    <section class="v10-panel"><div class="v10-panel-head"><div><span>VARLIKLAR</span><h2>Portföy Dağılımı</h2></div><button onclick="v10Tab('assets')">Tümü</button></div><div class="v10-donut-wrap"><div id="v10Donut" class="v10-donut"><b id="donutTotal">0 ₺</b><small>TOPLAM</small></div><div class="v10-legend"><div><i class="gold-dot"></i>Altın <b id="goldTotalMini">0 ₺</b></div><div><i class="blue-dot"></i>Döviz <b id="fxTotalMini">0 ₺</b></div><div><i class="cash-dot"></i>Nakit <b id="cashTotalMini">0 ₺</b></div></div></div></section>
+   </div>
+   <div style="display:none"><span id="sTarget"></span><span id="sRemain"></span><span id="sPct"></span></div>
+  </section>
+
+  <section class="v10-page" data-page="goals"><div id="goalsAnchor" class="v10-title"><div><span>BİRİKİM PLANI</span><h2>Hedeflerim</h2></div><button class="btn" onclick="openGoal()">+ Yeni Hedef</button></div><div id="goals" class="goal-grid"></div></section>
+  <section class="v10-page" data-page="assets"><div id="assetsAnchor" class="v10-title"><div><span>PORTFÖY</span><h2>Altın & Döviz</h2></div><div class="v10-inline"><button class="btn" onclick="openAsset(null,'gold')">🥇 Altın Ekle</button><button class="btn secondary" onclick="openAsset(null,'fx')">💵 Döviz Ekle</button></div></div><div class="v10-asset-head"><h3>🥇 Altınlarım</h3><button onclick="refreshPrices(true)">↻ Fiyatları Güncelle</button></div><div id="goldAssets" class="goal-grid"></div><div class="v10-asset-head"><h3>💵 Dövizlerim</h3></div><div id="fxAssets" class="goal-grid"></div></section>
+  <section class="v10-page" data-page="history"><div id="historyAnchor" class="v10-title"><div><span>HAREKETLER</span><h2>İşlemler</h2></div></div><div id="history" class="history v10-history"></div></section>
+ </main>
+</section>
+<section id="adminView" class="app hidden">
+ <div class="topbar"><div class="brand"><h1>⚙️ Yönetici Paneli</h1><p>Kullanıcı hesaplarını yönetin.</p></div><div class="top-actions"><span class="badge">Yönetici</span><button class="btn secondary" onclick="logout()">Çıkış</button></div></div>
+ <div class="admin-grid">
+  <div class="card"><h2 class="admin-title">Yeni Kullanıcı</h2><div class="muted">Geçici şifreyle kullanıcı oluşturun. Kullanıcı ilk girişte kendi şifresini belirler.</div>
+   <label>Kullanıcı adı</label><input id="newUser" class="input" placeholder="örn. mete">
+   <label>Geçici şifre</label><input id="newPass" class="input" type="password" placeholder="En az 8 karakter">
+   <button class="btn full" onclick="addUser()">Kullanıcı Ekle</button><div id="adminMsg" class="msg"></div>
+   <div class="privacy">🔒 Yönetici panelinde kullanıcıların hedefleri, birikimleri ve işlem geçmişleri görüntülenmez.</div>
+  </div>
+  <div class="card"><div class="section-head" style="margin-top:0"><h2>Kullanıcılar</h2><span id="userCount"></span></div><div id="users" class="users"></div></div>
+ </div>
+</section>
+
+<div id="editGoalModal" class="modal-bg hidden"><div class="modal"><h3>🎯 Hedefi Düzenle</h3><p>Mevcut birikiminiz korunur.</p>
+ <label>Hedef adı</label><input id="egName" class="input">
+ <label>Toplam hedef tutarı (TL)</label><input id="egTarget" class="input" inputmode="decimal">
+ <label>Aylık planlanan birikim (TL)</label><input id="egMonthly" class="input" inputmode="decimal">
+ <div id="editGoalMsg" class="msg"></div><div class="modal-actions"><button class="btn secondary" onclick="closeEditGoal()">Vazgeç</button><button class="btn" onclick="saveEditGoal()">Kaydet</button></div></div></div>
+
+<div id="assetModal" class="modal-bg hidden"><div class="modal"><h3 id="assetModalTitle">🥇 Altın Ekle</h3><p id="assetModalDesc">Altın miktarınızı ve birim fiyatını girin.</p>
+ <label id="aTypeLabel">Altın türü</label><select id="aType" class="input"></select>
+ <label>Miktar / Adet</label><input id="aAmount" class="input" inputmode="decimal" placeholder="Örn. 25">
+ <label>Birim fiyat / kur (TL)</label><input id="aPrice" class="input" inputmode="decimal" placeholder="Örn. 3.250,00"><div class="muted" style="margin-top:6px;font-size:11px">USD/EUR/GBP ile Has, 24/22/18/14 ayar gram bazlı altınlar internete bağlıyken otomatik güncellenir. Ziynet altınlarında piyasa primi nedeniyle manuel fiyat kullanılır.</div>
+ <label>Not (isteğe bağlı)</label><input id="aNote" class="input" placeholder="Örn. Fiziki altın">
+ <div id="assetMsg" class="msg"></div><div class="modal-actions"><button class="btn secondary" onclick="closeAsset()">Vazgeç</button><button class="btn" onclick="saveAsset()">Kaydet</button></div></div></div>
+
+<div id="cashModal" class="modal-bg hidden"><div class="modal"><h3>💵 Kasaya Para Ekle</h3><p>Elinize geçen serbest parayı kasaya kaydedin. Daha sonra bu parayı hedeflerinize aktarabilirsiniz.</p>
+ <label>Tutar (TL)</label><input id="cashAmount" class="input" inputmode="decimal" placeholder="Örn. 1.000,00">
+ <label>Açıklama (isteğe bağlı)</label><input id="cashNote" class="input" placeholder="Örn. Elden aldığım para">
+ <div class="modal-actions"><button class="btn secondary" onclick="closeCash()">Vazgeç</button><button class="btn" onclick="saveCash()">Kasaya Ekle</button></div></div></div>
+
+<div id="goalModal" class="modal-bg hidden"><div class="modal"><h3>Yeni Birikim Hedefi</h3><p>Hedefinizi oluşturun. Daha sonra para ekleyip çıkarabilirsiniz.</p>
+ <label>Hedef adı</label><input id="gName" class="input" placeholder="Örn. Araba">
+ <label>Hedef tutarı (TL)</label><input id="gTarget" class="input" inputmode="decimal" placeholder="500.000,00">
+ <label>Başlangıç birikimi (TL)</label><input id="gStart" class="input" inputmode="decimal" value="0" placeholder="0,00"><div class="muted" style="margin-top:6px">Başlangıç tutarı kasadan hedefe aktarılır.</div>
+ <label>Aylık planlanan birikim (TL)</label><input id="gMonthly" class="input" inputmode="decimal" value="0" placeholder="0,00">
+ <div class="modal-actions"><button class="btn secondary" onclick="closeGoal()">Vazgeç</button><button class="btn" onclick="saveGoal()">Hedefi Oluştur</button></div></div></div>
+
+<div id="moneyModal" class="modal-bg hidden"><div class="modal"><h3 id="moneyTitle">Para Ekle</h3><p id="moneyDesc"></p>
+ <label>Tutar (TL)</label><input id="moneyAmount" class="input" inputmode="decimal" placeholder="1.000,00">
+ <label>Not (isteğe bağlı)</label><input id="moneyNote" class="input" placeholder="Örn. Ekim birikimi">
+ <div class="modal-actions"><button class="btn secondary" onclick="closeMoney()">Vazgeç</button><button class="btn" onclick="saveMoney()">Kaydet</button></div></div></div>
+
+<div id="passModal" class="modal-bg hidden"><div class="modal"><h3>Şifre Değiştir</h3><p id="passDesc"></p>
+ <label>Geçici şifre</label><input id="resetPass" class="input" type="password" placeholder="En az 8 karakter">
+ <div class="modal-actions"><button class="btn secondary" onclick="closePass()">Vazgeç</button><button class="btn" onclick="savePass()">Değiştir</button></div></div></div>
+
+<div id="firstPassModal" class="modal-bg hidden"><div class="modal"><h3>🔐 Kendi Şifrenizi Belirleyin</h3><p>Geçici şifreyle giriş yaptınız. Devam etmek için yalnızca sizin bileceğiniz yeni bir şifre oluşturun.</p>
+ <label>Yeni şifre</label><input id="firstPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter">
+ <label>Yeni şifre tekrar</label><input id="firstPass2" class="input" type="password" autocomplete="new-password" placeholder="Şifreyi tekrar girin">
+ <div id="firstPassMsg" class="msg"></div>
+ <div class="modal-actions"><button class="btn secondary" onclick="logoutFromFirstPass()">Çıkış</button><button class="btn" onclick="saveFirstPass()">Şifremi Kaydet</button></div></div></div>
+
+<div id="ownPassModal" class="modal-bg hidden"><div class="modal"><h3>Şifremi Değiştir</h3><p>Güvenlik için önce mevcut şifrenizi doğrulayın.</p>
+ <label>Mevcut şifre</label><input id="ownOldPass" class="input" type="password" autocomplete="current-password">
+ <label>Yeni şifre</label><input id="ownNewPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter">
+ <label>Yeni şifre tekrar</label><input id="ownNewPass2" class="input" type="password" autocomplete="new-password">
+ <div id="ownPassMsg" class="msg"></div>
+ <div class="modal-actions"><button class="btn secondary" onclick="closeOwnPass()">Vazgeç</button><button class="btn" onclick="saveOwnPass()">Şifreyi Değiştir</button></div></div></div>
+
+
+<div id="editTxModal" class="modal-bg hidden"><div class="modal"><h3>İşlemi Düzenle</h3><p id="editTxDesc">Hatalı kaydı düzeltin. Bakiyeler otomatik güncellenir.</p>
+ <label>Tutar (TL)</label><input id="editTxAmount" class="input" inputmode="decimal" placeholder="1.000,00">
+ <label>Açıklama</label><input id="editTxNote" class="input" placeholder="Açıklama">
+ <div id="editTxMsg" class="msg"></div>
+ <div class="modal-actions"><button class="btn secondary" onclick="closeEditTx()">Vazgeç</button><button class="btn" onclick="saveEditTx()">Kaydet</button></div></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBYTNcOlqNDFYS0YXN1SIKJdjFGPHRa3Os",
+  authDomain: "birikim-hedefi.firebaseapp.com",
+  projectId: "birikim-hedefi",
+  storageBucket: "birikim-hedefi.firebasestorage.app",
+  messagingSenderId: "371414588055",
+  appId: "1:371414588055:web:7fe54e5a9e693c806ee7d2"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth=firebase.auth();
+const fbDb=firebase.firestore();
+let cloudReady=false, cloudUid=null, cloudCache=null;
+function cloudEmail(username){
+  return String(username||'').trim().toLowerCase()
+    .replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c')
+    .replace(/[^a-z0-9._-]/g,'_')+'@birikimhedefi.app';
+}
+async function cloudLoad(){
+  if(!fbAuth.currentUser)return null;
+  const ref=fbDb.collection('users').doc(fbAuth.currentUser.uid);
+  const snap=await ref.get();
+  if(snap.exists){
+    const obj=snap.data()||{};
+    return obj.finance||{goals:[],history:[],assets:[],cash:0};
+  }
+  const fresh={goals:[],history:[],assets:[],cash:0};
+  await ref.set({finance:fresh,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  return fresh;
+}
+async function cloudSave(v){
+  if(!fbAuth.currentUser)return;
+  await fbDb.collection('users').doc(fbAuth.currentUser.uid).set({
+    finance:v,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
+}
+</script>
+<script>
+const K_USERS='bh_users_v2', K_DATA='bh_private_data_v2';
+let session=null, moneyGoal=null, moneyMode='add', resetUser=null, editTxId=null, editGoalId=null, editAssetId=null;
+const $=id=>document.getElementById(id), fmt=n=>new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0)+' ₺';
+function users(){try{return JSON.parse(localStorage.getItem(K_USERS)||'[]')}catch(e){return []}}
+function saveUsers(v){localStorage.setItem(K_USERS,JSON.stringify(v))}
+function allData(){try{return JSON.parse(localStorage.getItem(K_DATA)||'{}')}catch(e){return {}}}
+function saveAllData(v){localStorage.setItem(K_DATA,JSON.stringify(v))}
+function privateData(u){
+ let item;
+ if(cloudReady&&session&&session.role==='user'&&cloudCache){
+   item=cloudCache;
+ }else{
+   let d=allData();
+   if(!d[u])d[u]={goals:[],history:[],cash:0};
+   item=d[u];
+ }
+ if(typeof item.cash!=='number')item.cash=0;
+ if(!Array.isArray(item.goals))item.goals=[];
+ if(!Array.isArray(item.history))item.history=[];
+ if(!Array.isArray(item.assets))item.assets=[];
+ (item.history||[]).forEach((h,i)=>{if(!h.id)h.id='legacy_'+i+'_'+String(h.date||'').replace(/\D/g,'');if(!h.kind){if(h.goal==='Kasa')h.kind='cash';else{let g=(item.goals||[]).find(x=>x.name===h.goal);if(g){h.kind='transfer';h.goalId=g.id}else h.kind='system'}}});
+ item.history=(item.history||[]).filter(h=>!String(h.note||'').toLowerCase().includes('hedef silindi'));
+ return item;
+}
+function savePrivate(u,v){
+ if(cloudReady&&session&&session.role==='user'&&fbAuth.currentUser){
+   cloudCache=v;
+   cloudSave(v).catch(e=>{console.error(e);alert('Buluta kaydetme sırasında hata oluştu. İnternet bağlantınızı kontrol edin.')});
+ }else{
+   let d=allData();d[u]=v;saveAllData(d);
+ }
+}
+function moneyVal(v){v=String(v??'').trim().replace(/\s/g,'').replace(/₺/g,'');if(!v)return 0;if(v.includes(',')&&v.includes('.'))v=v.replace(/\./g,'').replace(',','.');else if(v.includes(','))v=v.replace(',','.');return Number(v)||0}
+function formatMoneyInput(el){let n=moneyVal(el.value);if(el.value.trim()!==''&&!isNaN(n))el.value=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}
+
+function showInitialScreen(){let hasAdmin=users().some(x=>x.role==='admin');$('setupBox').classList.toggle('hidden',hasAdmin);$('loginBox').classList.toggle('hidden',!hasAdmin)}
+function createAdmin(){let n=$('setupUser').value.trim(),p=$('setupPass').value,p2=$('setupPass2').value,m=$('setupMsg');if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}if(p.length<8){m.textContent='Yönetici şifresi en az 8 karakter olmalı.';return}if(p!==p2){m.textContent='Şifreler eşleşmiyor.';return}saveUsers([{username:n,password:p,role:'admin',active:true,mustChangePassword:false}]);m.textContent='';showInitialScreen();$('loginUser').value=n;$('loginPass').focus()}
+showInitialScreen();
+
+async function login(){
+ let u=$('loginUser').value.trim(),p=$('loginPass').value;
+ let found=users().find(x=>x.username.toLowerCase()===u.toLowerCase()&&x.password===p);
+ $('loginMsg').textContent='Giriş yapılıyor...';
+ // Yerel yönetici hesabı yönetim paneli için korunur.
+ if(found&&found.role==='admin'){
+   if(!found.active){$('loginMsg').textContent='Bu hesap pasif durumda.';return}
+   session=found;$('loginMsg').textContent='';$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');renderAdmin();return;
+ }
+ try{
+   let cred=await fbAuth.signInWithEmailAndPassword(cloudEmail(u),p);
+   let local=users().find(x=>x.username.toLowerCase()===u.toLowerCase());
+   session=local&&local.role!=='admin'?local:{username:u,role:'user',active:true,mustChangePassword:false};
+   cloudUid=cred.user.uid;
+   cloudCache=await cloudLoad();
+   cloudReady=true;
+   $('loginMsg').textContent='';
+   $('loginView').classList.add('hidden');
+   $('userView').classList.remove('hidden');
+   $('hello').textContent=`Hoş geldin, ${session.username}`;
+   renderUser();
+ }catch(e){
+   $('loginMsg').textContent='Kullanıcı adı veya şifre hatalı.';
+ }
+}
+function logout(){try{fbAuth.signOut()}catch(e){}cloudReady=false;cloudUid=null;cloudCache=null;session=null;$('adminView').classList.add('hidden');$('userView').classList.add('hidden');$('firstPassModal').classList.add('hidden');$('ownPassModal').classList.add('hidden');$('loginView').classList.remove('hidden');$('loginPass').value='';showInitialScreen()}
+$('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+
+function renderAdmin(){let list=users().filter(x=>x.role!=='admin');$('userCount').textContent=list.length+' kullanıcı';$('users').innerHTML=list.length?list.map(u=>`<div class="user-row"><div><div class="user-name">${esc(u.username)}</div><div class="user-meta">${u.active?'Aktif':'Pasif'} hesap</div></div><div class="row-actions"><button class="btn small secondary" onclick="toggleUser('${js(u.username)}')">${u.active?'Pasife Al':'Aktif Et'}</button><button class="btn small secondary" onclick="openPass('${js(u.username)}')">Şifre</button><button class="btn small danger" onclick="deleteUser('${js(u.username)}')">Sil</button></div></div>`).join(''):'<div class="empty"><b>Henüz kullanıcı yok</b>Soldaki formdan kullanıcı ekleyebilirsiniz.</div>'}
+async function addUser(){
+ let n=$('newUser').value.trim(),p=$('newPass').value,m=$('adminMsg');
+ if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}
+ if(p.length<8){m.textContent='Geçici şifre en az 8 karakter olmalı.';return}
+ let us=users();if(us.some(x=>x.username.toLowerCase()===n.toLowerCase())){m.textContent='Bu kullanıcı adı zaten var.';return}
+ m.textContent='Bulut hesabı oluşturuluyor...';
+ try{
+   let secondary;
+   try{secondary=firebase.app('userCreator')}catch(e){secondary=firebase.initializeApp(firebaseConfig,'userCreator')}
+   let a=secondary.auth();
+   await a.createUserWithEmailAndPassword(cloudEmail(n),p);
+   await a.signOut();
+   us.push({username:n,password:p,role:'user',active:true,mustChangePassword:false});
+   saveUsers(us);$('newUser').value='';$('newPass').value='';
+   m.style.color='var(--green)';m.textContent='Kullanıcı bulutta oluşturuldu.';
+   renderAdmin();setTimeout(()=>{m.textContent='';m.style.color='var(--red)'},1800);
+ }catch(e){
+   console.error(e);
+   m.textContent=e&&e.code==='auth/email-already-in-use'?'Bu kullanıcı bulutta zaten var.':'Kullanıcı oluşturulamadı: '+(e.message||'Firebase hatası');
+ }
+}
+function toggleUser(n){let us=users(),u=us.find(x=>x.username===n);if(u){u.active=!u.active;saveUsers(us);renderAdmin()}}
+function deleteUser(n){if(!confirm(n+' kullanıcısını silmek istiyor musunuz? Hesap silinir; finansal kayıtlar yöneticiye gösterilmez.'))return;saveUsers(users().filter(x=>x.username!==n));renderAdmin()}
+function openPass(n){resetUser=n;$('passDesc').textContent=n+' kullanıcısı için geçici şifre belirleyin. Kullanıcı sonraki girişte kendi şifresini oluşturacak.';$('resetPass').value='';$('passModal').classList.remove('hidden')}
+function closePass(){$('passModal').classList.add('hidden')}
+function savePass(){let p=$('resetPass').value;if(p.length<8){alert('Geçici şifre en az 8 karakter olmalı.');return}let us=users(),u=us.find(x=>x.username===resetUser);if(u){u.password=p;u.mustChangePassword=true;saveUsers(us)}closePass()}
+
+
+function logoutFromFirstPass(){session=null;$('firstPassModal').classList.add('hidden');$('loginView').classList.remove('hidden');$('loginPass').value=''}
+function saveFirstPass(){let p1=$('firstPass1').value,p2=$('firstPass2').value,m=$('firstPassMsg');if(p1.length<8){m.textContent='Yeni şifre en az 8 karakter olmalı.';return}if(p1!==p2){m.textContent='Şifreler eşleşmiyor.';return}if(p1===session.password){m.textContent='Geçici şifreden farklı bir şifre belirleyin.';return}let us=users(),u=us.find(x=>x.username===session.username);if(!u)return;u.password=p1;u.mustChangePassword=false;saveUsers(us);session=u;$('firstPassModal').classList.add('hidden');$('userView').classList.remove('hidden');$('hello').textContent=`Hoş geldin, ${u.username}`;renderUser()}
+function openOwnPass(){$('ownOldPass').value='';$('ownNewPass1').value='';$('ownNewPass2').value='';$('ownPassMsg').textContent='';$('ownPassModal').classList.remove('hidden')}
+function closeOwnPass(){$('ownPassModal').classList.add('hidden')}
+async function saveOwnPass(){
+ let old=$('ownOldPass').value,p1=$('ownNewPass1').value,p2=$('ownNewPass2').value,m=$('ownPassMsg');
+ if(p1.length<8){m.textContent='Yeni şifre en az 8 karakter olmalı.';return}
+ if(p1!==p2){m.textContent='Yeni şifreler eşleşmiyor.';return}
+ if(p1===old){m.textContent='Yeni şifre mevcut şifreden farklı olmalı.';return}
+ if(cloudReady&&fbAuth.currentUser){
+   try{
+     let credential=firebase.auth.EmailAuthProvider.credential(fbAuth.currentUser.email,old);
+     await fbAuth.currentUser.reauthenticateWithCredential(credential);
+     await fbAuth.currentUser.updatePassword(p1);
+     let us=users(),u=us.find(x=>x.username===session.username);if(u){u.password=p1;saveUsers(us);session=u}
+     m.style.color='var(--green)';m.textContent='Şifreniz bulutta değiştirildi.';
+     setTimeout(()=>{closeOwnPass();m.style.color='var(--red)'},900);return;
+   }catch(e){m.textContent='Mevcut şifreniz yanlış veya şifre değiştirilemedi.';return}
+ }
+ let us=users(),u=us.find(x=>x.username===session.username);
+ if(!u||u.password!==old){m.textContent='Mevcut şifreniz yanlış.';return}
+ u.password=p1;saveUsers(us);session=u;m.style.color='var(--green)';m.textContent='Şifreniz değiştirildi.';
+ setTimeout(()=>{closeOwnPass();m.style.color='var(--red)'},900)
+}
+
+function renderUser(){syncMobileNav();let d=privateData(session.username),saved=d.goals.reduce((a,g)=>a+Number(g.saved),0),target=d.goals.reduce((a,g)=>a+Number(g.target),0),assetsTotal=d.assets.reduce((a,x)=>a+(Number(x.amount)||0)*(Number(x.price)||0),0),remain=Math.max(0,target-saved),pct=target?Math.min(100,saved/target*100):0;$('sCash').textContent=fmt(d.cash);$('sAssets').textContent=fmt(assetsTotal);if($('portfolioTotal'))$('portfolioTotal').textContent=fmt(d.cash+saved+assetsTotal);if($('priceStatus'))$('priceStatus').textContent=d._lastPriceUpdate?'Son güncelleme: '+new Date(d._lastPriceUpdate).toLocaleString('tr-TR'):'Fiyatlar: manuel';$('sSaved').textContent=fmt(saved);$('sTarget').textContent=fmt(target);$('sRemain').textContent=fmt(remain);$('sPct').textContent='%'+pct.toFixed(1).replace('.',',');
+let golds=d.assets.filter(a=>isGold(a.type)),fxs=d.assets.filter(a=>isFx(a.type));
+$('goldAssets').innerHTML=golds.length?golds.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz altın eklenmedi</b>Gram, çeyrek, yarım veya tam altın ekleyebilirsiniz.</div>';
+$('fxAssets').innerHTML=fxs.length?fxs.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz döviz eklenmedi</b>Dolar, Euro veya Sterlin ekleyebilirsiniz.</div>';
+$('goals').innerHTML=d.goals.length?d.goals.map(g=>{let p=Math.min(100,g.saved/g.target*100),months=g.monthly>0?Math.ceil(Math.max(0,g.target-g.saved)/g.monthly):null;return `<div class="card"><div class="goal-title">${esc(g.name)}</div><div class="goal-sub">${months===0?'🎉 Hedef tamamlandı':months?`⏳ Tahmini tamamlanmasına <b style="color:var(--text)">${months} ay</b> var`:'⏳ Aylık plan belirlenmedi'}</div><div class="money-row"><span>${fmt(g.saved)}</span><span>${fmt(g.target)}</span></div><div class="bar"><div class="fill" style="width:${p}%"></div></div><div class="goal-bottom"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>Aylık: ${fmt(g.monthly)}</span></div><div class="goal-actions"><button class="btn small" onclick="openMoney('${g.id}','add')">+ Para Ekle</button><button class="btn small secondary" onclick="openMoney('${g.id}','sub')">Para Çıkar</button><button class="btn small secondary" onclick="openEditGoal('${g.id}')">Hedefi Düzenle</button><button class="btn small danger" onclick="removeGoal('${g.id}')">Hedefi Sil</button></div></div>`}).join(''):'<div class="card empty" style="grid-column:1/-1"><b>İlk hedefini oluştur</b>Araba, ev, tatil veya istediğin başka bir şey için birikmeye başla.</div>';
+$('history').innerHTML=d.history.length?d.history.slice(0,30).map(h=>`<div class="hist"><div><b>${esc(h.goal)}</b><small>${esc(h.note||'İşlem')} • ${new Date(h.date).toLocaleString('tr-TR')}</small></div><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end"><b class="${h.type==='add'?'plus':'minus'}">${h.type==='add'?'+':'-'}${fmt(h.amount)}</b>${h.locked||h.kind==='system'?'':`<button class="btn small secondary" onclick="openEditTx('${js(h.id)}')">Düzenle</button><button class="btn small danger" onclick="deleteTx('${js(h.id)}')">Sil</button>`}</div></div>`).join(''):'<div class="card empty"><b>Henüz işlem yok</b>Bir hedefe para eklediğinizde burada görünür.</div>';v10Dashboard(d)}
+
+function txGoal(d,h){return h.goalId?d.goals.find(g=>g.id===h.goalId):d.goals.find(g=>g.name===h.goal)}
+function reverseTx(d,h){
+ let a=Number(h.amount)||0;
+ if(h.kind==='cash'&&h.type==='add'){if(d.cash<a)return false;d.cash-=a;return true}
+ if(h.kind==='transfer'){let g=txGoal(d,h);if(!g)return false;if(h.type==='add'){if(g.saved<a)return false;g.saved-=a;d.cash+=a;return true}else{if(d.cash<a)return false;g.saved+=a;d.cash-=a;return true}}
+ return false
+}
+function applyTx(d,h,a){
+ if(h.kind==='cash'&&h.type==='add'){d.cash+=a;return true}
+ if(h.kind==='transfer'){let g=txGoal(d,h);if(!g)return false;if(h.type==='add'){if(d.cash<a)return false;g.saved+=a;d.cash-=a;return true}else{if(g.saved<a)return false;g.saved-=a;d.cash+=a;return true}}
+ return false
+}
+function openEditTx(id){let d=privateData(session.username),h=d.history.find(x=>x.id===id);if(!h||h.locked||h.kind==='system')return;editTxId=id;$('editTxAmount').value=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(h.amount);$('editTxNote').value=h.note||'';$('editTxDesc').textContent=h.goal+' • '+(h.kind==='cash'?'Kasa girişi':h.type==='add'?'Kasadan hedefe aktarım':'Hedeften kasaya aktarım');$('editTxMsg').textContent='';$('editTxModal').classList.remove('hidden')}
+function closeEditTx(){$('editTxModal').classList.add('hidden');editTxId=null}
+function saveEditTx(){let d=privateData(session.username),h=d.history.find(x=>x.id===editTxId),a=moneyVal($('editTxAmount').value),m=$('editTxMsg');if(!h||a<=0){m.textContent='Geçerli bir tutar girin.';return}let copy=JSON.parse(JSON.stringify(d)),hc=copy.history.find(x=>x.id===editTxId);if(!reverseTx(copy,hc)){m.textContent='Mevcut bakiye nedeniyle bu işlem değiştirilemiyor.';return}if(!applyTx(copy,hc,a)){m.textContent='Yeni tutar için kasada veya hedefte yeterli bakiye yok.';return}hc.amount=a;hc.note=$('editTxNote').value.trim()||hc.note;savePrivate(session.username,copy);closeEditTx();renderUser()}
+function deleteTx(id){let d=privateData(session.username),h=d.history.find(x=>x.id===id);if(!h||h.locked||h.kind==='system')return;if(!confirm('Bu işlemi silmek istiyor musunuz? Bakiye otomatik düzeltilecek.'))return;if(!reverseTx(d,h)){alert('Mevcut bakiye nedeniyle bu işlem silinemiyor. Önce sonraki para hareketlerini düzeltin.');return}d.history=d.history.filter(x=>x.id!==id);savePrivate(session.username,d);renderUser()}
+
+function num(n){return new Intl.NumberFormat('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:4}).format(Number(n)||0)}
+function assetIcon(t){return ['USD','EUR','GBP'].includes(t)?'💱':t.toLowerCase().includes('altın')?'🥇':'💎'}
+function assetUnit(t){if(['Has Altın','24 Ayar Gram Altın','22 Ayar Altın','22 Ayar Bilezik','18 Ayar Altın','14 Ayar Altın','Gram Altın'].includes(t))return 'gram';if(isGold(t))return 'adet';return ['USD','EUR','GBP'].includes(t)?t:'birim'}
+function openEditGoal(id){let d=privateData(session.username),g=d.goals.find(x=>x.id===id);if(!g)return;editGoalId=id;$('egName').value=g.name;$('egTarget').value=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(g.target);$('egMonthly').value=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(g.monthly);$('editGoalMsg').textContent='';$('editGoalModal').classList.remove('hidden')}
+function closeEditGoal(){$('editGoalModal').classList.add('hidden');editGoalId=null}
+function saveEditGoal(){let d=privateData(session.username),g=d.goals.find(x=>x.id===editGoalId),name=$('egName').value.trim(),target=moneyVal($('egTarget').value),monthly=Math.max(0,moneyVal($('egMonthly').value)),m=$('editGoalMsg');if(!g||!name||target<=0){m.textContent='Geçerli hedef bilgileri girin.';return}let oldName=g.name;g.name=name;g.target=target;g.monthly=monthly;d.history.forEach(h=>{if(h.goalId===g.id)h.goal=name});savePrivate(session.username,d);closeEditGoal();renderUser()}
+function isGold(t){return String(t).toLowerCase().includes('altın')}
+function isFx(t){return ['USD','EUR','GBP'].includes(t)}
+function goldPurity(t){if(['Has Altın','24 Ayar Gram Altın','Gram Altın'].includes(t))return 1;if(['22 Ayar Altın','22 Ayar Bilezik'].includes(t))return 22/24;if(t==='18 Ayar Altın')return 18/24;if(t==='14 Ayar Altın')return 14/24;return null}
+function assetCard(a){let total=(Number(a.amount)||0)*(Number(a.price)||0);return `<div class="card"><div class="goal-title">${esc(assetIcon(a.type)+' '+a.type)}</div><div class="goal-sub">${esc(a.note||'Varlık kaydı')}</div>${a.liveReference?`<div class="asset-badge" style="margin:8px 0">🌐 Canlı referans: ${fmt(a.liveReference)} / ${assetUnit(a.type)}</div>`:''}<div class="money-row"><span>${num(a.amount)} ${esc(assetUnit(a.type))}</span><span>${fmt(total)}</span></div><div class="goal-bottom"><span>Birim: ${fmt(a.price)}</span><span>${a.autoPrice?'🌐 Güncel fiyat':'✍️ Manuel fiyat'}</span></div><div class="goal-actions"><button class="btn small secondary" onclick="openAsset('${js(a.id)}','${isGold(a.type)?'gold':'fx'}')">Düzenle</button><button class="btn small danger" onclick="deleteAsset('${js(a.id)}')">Sil</button></div></div>`}
+function fillAssetTypes(mode,selected){let opts=mode==='gold'?[['Has Altın','Has Altın (gr)'],['24 Ayar Gram Altın','24 Ayar Gram Altın'],['22 Ayar Altın','22 Ayar Altın (gr)'],['22 Ayar Bilezik','22 Ayar Bilezik (gr)'],['18 Ayar Altın','18 Ayar Altın (gr)'],['14 Ayar Altın','14 Ayar Altın (gr)'],['Çeyrek Altın','Çeyrek Altın'],['Yarım Altın','Yarım Altın'],['Tam Altın','Tam Altın'],['Cumhuriyet / Ata Altını','Cumhuriyet / Ata Altını'],['Reşat Altını','Reşat Altını'],['Gremse Altın','Gremse Altın']]:[['USD','Dolar (USD)'],['EUR','Euro (EUR)'],['GBP','Sterlin (GBP)']];$('aType').innerHTML=opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('');if(selected&&opts.some(o=>o[0]===selected))$('aType').value=selected}
+function openAsset(id=null,mode='gold'){editAssetId=id;let d=privateData(session.username),a=id?d.assets.find(x=>x.id===id):null;if(a)mode=isGold(a.type)?'gold':'fx';$('assetModal').dataset.mode=mode;$('assetModalTitle').textContent=a?(mode==='gold'?'🥇 Altını Düzenle':'💵 Dövizi Düzenle'):(mode==='gold'?'🥇 Altın Ekle':'💵 Döviz Ekle');$('assetModalDesc').textContent=mode==='gold'?'Altın türünü, miktar/adedi ve birim fiyatını girin.':'Döviz türünü, miktarı ve güncel/istediğiniz kuru girin.';$('aTypeLabel').textContent=mode==='gold'?'Altın türü':'Döviz türü';fillAssetTypes(mode,a?.type);$('aAmount').value=a?num(a.amount):'';$('aPrice').value=a?new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(a.price):'';$('aNote').value=a?.note||'';$('assetMsg').textContent='';$('assetModal').classList.remove('hidden')}
+function closeAsset(){$('assetModal').classList.add('hidden');editAssetId=null}
+function saveAsset(){let d=privateData(session.username),type=$('aType').value,amount=moneyVal($('aAmount').value),price=moneyVal($('aPrice').value),note=$('aNote').value.trim(),m=$('assetMsg');if(!type||amount<=0||price<0){m.textContent='Miktar ve geçerli birim fiyat girin.';return}if(editAssetId){let a=d.assets.find(x=>x.id===editAssetId);if(a){a.type=type;a.amount=amount;a.price=price;a.note=note;a.autoPrice=false}}else d.assets.push({id:'a'+Date.now().toString(36),type,amount,price,note,autoPrice:false});savePrivate(session.username,d);closeAsset();renderUser()}
+function deleteAsset(id){let d=privateData(session.username),a=d.assets.find(x=>x.id===id);if(!a||!confirm(a.type+' kaydını silmek istiyor musunuz?'))return;d.assets=d.assets.filter(x=>x.id!==id);savePrivate(session.username,d);renderUser()}
+
+async function refreshPrices(showMessage=false){
+ if(!session||session.role!=='user')return;
+ let d=privateData(session.username), changed=false, errors=[];
+ $('priceStatus').textContent='Fiyatlar güncelleniyor...';
+ try{
+   let r=await fetch('https://api.frankfurter.dev/v2/rates?base=USD&quotes=TRY,EUR,GBP',{cache:'no-store'});
+   if(!r.ok)throw new Error('Döviz servisi');
+   let rows=await r.json(), rates={USD:null,EUR:null,GBP:null};
+   let tryRate=rows.find(x=>x.quote==='TRY')?.rate;
+   let eurPerUsd=rows.find(x=>x.quote==='EUR')?.rate;
+   let gbpPerUsd=rows.find(x=>x.quote==='GBP')?.rate;
+   if(tryRate){
+     rates.USD=tryRate;
+     if(eurPerUsd)rates.EUR=tryRate/eurPerUsd;
+     if(gbpPerUsd)rates.GBP=tryRate/gbpPerUsd;
+     d.assets.forEach(a=>{if(rates[a.type]){a.price=rates[a.type];a.autoPrice=true;changed=true}})
+     d._lastFx={rates,date:new Date().toISOString()};
+   }
+ }catch(e){errors.push('döviz')}
+ try{
+   let r=await fetch('https://api.gold-api.com/price/XAU',{cache:'no-store'});
+   if(!r.ok)throw new Error('Altın servisi');
+   let g=await r.json();
+   let usdOz=Number(g.price||g.ask||g.value);
+   let usdTry=d._lastFx?.rates?.USD;
+   if(usdOz>0&&usdTry>0){
+     let gramTry=(usdOz/31.1034768)*usdTry;
+     d.assets.forEach(a=>{let purity=goldPurity(a.type);if(purity){let ref=gramTry*purity;a.liveReference=ref;a.price=ref;a.autoPrice=true;changed=true}})
+     d._lastGold={gramTry,date:new Date().toISOString()};
+   }else errors.push('altın');
+ }catch(e){errors.push('altın')}
+ if(changed){d._lastPriceUpdate=new Date().toISOString();savePrivate(session.username,d)}
+ renderUser();
+ let dd=privateData(session.username);
+ if(dd._lastPriceUpdate)$('priceStatus').textContent='Son güncelleme: '+new Date(dd._lastPriceUpdate).toLocaleString('tr-TR')+(errors.length?' • Bazı fiyatlar alınamadı':'');
+ else $('priceStatus').textContent='Fiyatlar: manuel';
+ if(showMessage){
+   if(changed&&!errors.length)alert('Güncel fiyatlar alındı.');
+   else if(changed)alert('Bazı fiyatlar güncellendi. Alınamayan fiyatlarda mevcut değer korundu.');
+   else alert('Fiyat servisine ulaşılamadı. Mevcut kayıtlı fiyatlar korundu.');
+ }
+}
+function openCash(){$('cashAmount').value='';$('cashNote').value='';$('cashModal').classList.remove('hidden')}
+function closeCash(){$('cashModal').classList.add('hidden')}
+function saveCash(){let a=moneyVal($('cashAmount').value);if(a<=0){alert('Geçerli bir tutar girin.');return}let d=privateData(session.username);d.cash+=a;d.history.unshift({id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),goal:'Kasa',goalId:null,kind:'cash',type:'add',amount:a,note:$('cashNote').value.trim()||'Kasaya para eklendi',date:new Date().toISOString()});savePrivate(session.username,d);closeCash();renderUser()}
+function openGoal(){$('gName').value='';$('gTarget').value='';$('gStart').value='0';$('gMonthly').value='0';$('goalModal').classList.remove('hidden')}
+function closeGoal(){$('goalModal').classList.add('hidden')}
+function saveGoal(){let name=$('gName').value.trim(),target=moneyVal($('gTarget').value),start=Math.max(0,moneyVal($('gStart').value)),monthly=Math.max(0,moneyVal($('gMonthly').value));if(!name||target<=0){alert('Hedef adı ve geçerli hedef tutarı girin.');return}let d=privateData(session.username);if(start>d.cash){alert('Başlangıç birikimi kasadaki paradan fazla olamaz. Kasada '+fmt(d.cash)+' var.');return}let g={id:Date.now().toString(36),name,target,saved:start,monthly};d.goals.push(g);if(start>0){d.cash-=start;d.history.unshift({id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),goal:name,goalId:g.id,kind:'transfer',type:'add',amount:start,note:'Kasadan başlangıç aktarımı',date:new Date().toISOString()})}savePrivate(session.username,d);closeGoal();renderUser()}
+function openMoney(id,mode){let d=privateData(session.username),g=d.goals.find(x=>x.id===id);if(!g)return;moneyGoal=id;moneyMode=mode;$('moneyTitle').textContent=mode==='add'?'Kasadan Hedefe Aktar':'Hedeften Kasaya Aktar';$('moneyDesc').textContent=g.name+' hedefi • Kasa: '+fmt(d.cash);$('moneyAmount').value='';$('moneyNote').value='';$('moneyModal').classList.remove('hidden')}
+function closeMoney(){$('moneyModal').classList.add('hidden')}
+function saveMoney(){let a=moneyVal($('moneyAmount').value);if(a<=0){alert('Geçerli bir tutar girin.');return}let d=privateData(session.username),g=d.goals.find(x=>x.id===moneyGoal);if(!g)return;if(moneyMode==='add'&&a>d.cash){alert('Kasada yeterli para yok. Mevcut kasa: '+fmt(d.cash));return}if(moneyMode==='sub'&&a>g.saved){alert('Birikimden daha fazla para çıkaramazsınız.');return}if(moneyMode==='add'){g.saved+=a;d.cash-=a}else{g.saved-=a;d.cash+=a}d.history.unshift({id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),goal:g.name,goalId:g.id,kind:'transfer',type:moneyMode,amount:a,note:$('moneyNote').value.trim()||(moneyMode==='add'?'Kasadan hedefe aktarıldı':'Hedeften kasaya iade edildi'),date:new Date().toISOString()});savePrivate(session.username,d);closeMoney();renderUser()}
+function removeGoal(id){
+ let d=privateData(session.username),g=d.goals.find(x=>x.id===id);
+ if(!g)return;
+ if(!confirm(g.name+' hedefini silmek istiyor musunuz?'))return;
+ // Hedefte kalan para sessizce kasaya geri döner.
+ d.cash+=(Number(g.saved)||0);
+ // Silinen hedef ve ona bağlı geçmiş kayıtları tamamen temizlenir.
+ d.goals=d.goals.filter(x=>x.id!==id);
+ d.history=(d.history||[]).filter(h=>h.goalId!==id && h.goal!==g.name);
+ savePrivate(session.username,d);
+ renderUser();
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function js(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+
+['cashAmount','gTarget','gStart','gMonthly','moneyAmount','editTxAmount','egTarget','egMonthly','aPrice'].forEach(id=>{let el=$(id);if(el)el.addEventListener('blur',()=>formatMoneyInput(el))});
+
+
+function mobileGo(where,btn){
+ document.querySelectorAll('.mobile-nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
+ let ids={home:'homeAnchor',goals:'goalsAnchor',assets:'assetsAnchor',history:'historyAnchor'},el=$(ids[where]);
+ if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function syncMobileNav(){let n=$('mobileNav');if(!n)return;n.classList.toggle('hidden',!session||session.role!=='user')}
+window.addEventListener('resize',syncMobileNav);
+
+
+function v10Tab(name,btn){
+ document.querySelectorAll('.v10-page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));
+ document.querySelectorAll('.v10-side nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function v10Dashboard(d){
+ let saved=d.goals.reduce((a,g)=>a+Number(g.saved||0),0),gold=d.assets.filter(a=>isGold(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),fx=d.assets.filter(a=>isFx(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),total=d.cash+saved+gold+fx;
+ if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Math.min(100,(Number(g.saved)||0)/(Number(g.target)||1)*100);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>${fmt(g.saved)} / ${fmt(g.target)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
+ if($('donutTotal'))$('donutTotal').textContent=fmt(total);
+ if($('goldTotalMini'))$('goldTotalMini').textContent=fmt(gold);
+ if($('fxTotalMini'))$('fxTotalMini').textContent=fmt(fx);
+ if($('cashTotalMini'))$('cashTotalMini').textContent=fmt(d.cash);
+ let base=Math.max(1,gold+fx+d.cash),gp=gold/base*100,fp=fx/base*100;
+ if($('v10Donut'))$('v10Donut').style.background=`conic-gradient(#d8b557 0 ${gp}%,#4a91ff ${gp}% ${gp+fp}%,#57c88a ${gp+fp}% 100%)`;
+}
+
+</script>
+
+<div id="mobileNav" class="mobile-nav hidden">
+ <button class="active" onclick="mobileGo('home',this)"><span>⌂</span>Ana Sayfa</button>
+ <button onclick="mobileGo('goals',this)"><span>◎</span>Hedefler</button>
+ <button onclick="mobileGo('assets',this)"><span>◈</span>Varlıklar</button>
+ <button onclick="mobileGo('history',this)"><span>≡</span>İşlemler</button>
+</div>
+
+</body></html>
