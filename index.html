@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v12.4 MT Logo Fix</title>
+<title>Birikim Hedefi • v12.5 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -588,7 +588,29 @@ function isGold(t){return String(t).toLowerCase().includes('altın')}
 function isFx(t){return ['USD','EUR','GBP'].includes(t)}
 function goldPurity(t){if(['Has Altın','24 Ayar Gram Altın','Gram Altın'].includes(t))return 1;if(['22 Ayar Altın','22 Ayar Bilezik'].includes(t))return 22/24;if(t==='18 Ayar Altın')return 18/24;if(t==='14 Ayar Altın')return 14/24;return null}
 function assetCard(a){let total=(Number(a.amount)||0)*(Number(a.price)||0),pl=assetPL(a);return `<div class="card"><div class="goal-title">${esc(assetIcon(a.type)+' '+a.type)}</div><div class="goal-sub">${esc(a.note||'Varlık kaydı')}</div>${a.liveReference?`<div class="asset-badge" style="margin:8px 0">🌐 Canlı referans: ${fmt(a.liveReference)} / ${assetUnit(a.type)}</div>`:''}<div class="money-row"><span>${num(a.amount)} ${esc(assetUnit(a.type))}</span><span>${fmt(total)}</span></div><div class="asset-pl ${pl>=0?'profit':'loss'}">${pl>=0?'Kâr':'Zarar'}: ${fmt(Math.abs(pl))} (${assetPLPct(a)})</div><div class="goal-bottom"><span>Maliyet: ${fmt(a.costPrice??a.price)}</span><span>Güncel: ${fmt(a.price)}</span></div><div class="goal-actions"><button class="btn small secondary" onclick="openAsset('${js(a.id)}','${isGold(a.type)?'gold':'fx'}')">Düzenle</button><button class="btn small danger" onclick="deleteAsset('${js(a.id)}')">Sil</button></div></div>`}
-function fillAssetTypes(mode,selected){let opts=mode==='gold'?[['Has Altın','Has Altın (gr)'],['24 Ayar Gram Altın','24 Ayar Gram Altın'],['22 Ayar Altın','22 Ayar Altın (gr)'],['22 Ayar Bilezik','22 Ayar Bilezik (gr)'],['18 Ayar Altın','18 Ayar Altın (gr)'],['14 Ayar Altın','14 Ayar Altın (gr)'],['Çeyrek Altın','Çeyrek Altın'],['Yarım Altın','Yarım Altın'],['Tam Altın','Tam Altın'],['Ata Altını','Ata Altını'],['Reşat Altını','Reşat Altını'],['Gremse Altın','Gremse Altın']]:[['USD','Dolar (USD)'],['EUR','Euro (EUR)'],['GBP','Sterlin (GBP)']];$('aType').innerHTML=opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('');if(selected&&opts.some(o=>o[0]===selected))$('aType').value=selected}
+function fillAssetTypes(mode,selected){
+ let opts=mode==='gold'?[
+ ['Has Altın','Has Altın (gr)'],
+ ['24 Ayar Gram Altın','24 Ayar Gram Altın'],
+ ['22 Ayar Altın','22 Ayar Altın (gr)'],
+ ['22 Ayar Bilezik','22 Ayar Bilezik (gr)'],
+ ['18 Ayar Altın','18 Ayar Altın (gr)'],
+ ['14 Ayar Altın','14 Ayar Altın (gr)'],
+ ['Çeyrek Altın','Çeyrek Altın'],
+ ['Yarım Altın','Yarım Altın'],
+ ['Tam Altın','Tam Altın'],
+ ['Ata Altın','Ata Altın'],
+ ['Cumhuriyet Altını','Cumhuriyet Altını'],
+ ['Reşat Altını','Reşat Altını'],
+ ['Gremse Altın','Gremse Altın']
+ ]:[['USD','Dolar (USD)'],['EUR','Euro (EUR)'],['GBP','Sterlin (GBP)']];
+ $('aType').innerHTML=opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('');
+ if(selected){
+   if(selected==='Ata Altını')selected='Ata Altın';
+   if(selected==='Cumhuriyet / Ata Altın'||selected==='Cumhuriyet/Ata Altın')selected='Cumhuriyet Altını';
+   if(opts.some(o=>o[0]===selected))$('aType').value=selected;
+ }
+}
 function openAsset(id=null,mode='gold'){editAssetId=id;let d=privateData(session.username),a=id?d.assets.find(x=>x.id===id):null;if(a)mode=isGold(a.type)?'gold':'fx';$('assetModal').dataset.mode=mode;$('assetModalTitle').textContent=a?(mode==='gold'?'🥇 Altını Düzenle':'💵 Dövizi Düzenle'):(mode==='gold'?'🥇 Altın Ekle':'💵 Döviz Ekle');$('assetModalDesc').textContent=mode==='gold'?'Altın türünü, miktar/adedi ve birim fiyatını girin.':'Döviz türünü, miktarı ve güncel/istediğiniz kuru girin.';$('aTypeLabel').textContent=mode==='gold'?'Altın türü':'Döviz türü';fillAssetTypes(mode,a?.type);$('aAmount').value=a?num(a.amount):'';$('aPrice').value=a?new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(a.price):'';$('aNote').value=a?.note||'';$('assetMsg').textContent='';$('assetModal').classList.remove('hidden')}
 function closeAsset(){$('assetModal').classList.add('hidden');editAssetId=null}
 function saveAsset(){let d=privateData(session.username),type=$('aType').value,amount=moneyVal($('aAmount').value),price=moneyVal($('aPrice').value),note=$('aNote').value.trim(),m=$('assetMsg');if(!type||amount<=0||price<0){m.textContent='Miktar ve geçerli birim fiyat girin.';return}if(editAssetId){let a=d.assets.find(x=>x.id===editAssetId);if(a){a.type=type;a.amount=amount;if(typeof a.costPrice!=='number')a.costPrice=Number(a.price)||price;a.price=price;a.note=note;a.autoPrice=false}}else d.assets.push({id:'a'+Date.now().toString(36),type,amount,price,costPrice:price,note,autoPrice:false});savePrivate(session.username,d);closeAsset();renderUser()}
@@ -596,8 +618,10 @@ function deleteAsset(id){let d=privateData(session.username),a=d.assets.find(x=>
 
 async function refreshPrices(showMessage=false){
  if(!session||session.role!=='user')return;
- let d=privateData(session.username), changed=false, errors=[];
+ let d=privateData(session.username), changed=false, errors=[], goldUpdated=0, fxUpdated=0;
  $('priceStatus').textContent='Fiyatlar güncelleniyor...';
+
+ // Döviz
  try{
    let r=await fetch('https://api.frankfurter.dev/v2/rates?base=USD&quotes=TRY,EUR,GBP',{cache:'no-store'});
    if(!r.ok)throw new Error('Döviz servisi');
@@ -606,34 +630,99 @@ async function refreshPrices(showMessage=false){
    let eurPerUsd=rows.find(x=>x.quote==='EUR')?.rate;
    let gbpPerUsd=rows.find(x=>x.quote==='GBP')?.rate;
    if(tryRate){
-     rates.USD=tryRate;
-     if(eurPerUsd)rates.EUR=tryRate/eurPerUsd;
-     if(gbpPerUsd)rates.GBP=tryRate/gbpPerUsd;
-     d.assets.forEach(a=>{if(rates[a.type]){a.price=rates[a.type];a.autoPrice=true;changed=true}})
+     rates.USD=Number(tryRate);
+     if(eurPerUsd)rates.EUR=Number(tryRate)/Number(eurPerUsd);
+     if(gbpPerUsd)rates.GBP=Number(tryRate)/Number(gbpPerUsd);
+     d.assets.forEach(a=>{
+       if(rates[a.type]>0){a.price=rates[a.type];a.autoPrice=true;fxUpdated++;changed=true}
+     });
      d._lastFx={rates,date:new Date().toISOString()};
    }
  }catch(e){errors.push('döviz')}
+
+ // Türkiye altın/sarrafiye fiyatları — Altın Grafiği API
  try{
-   let r=await fetch('https://api.gold-api.com/price/XAU',{cache:'no-store'});
-   if(!r.ok)throw new Error('Altın servisi');
-   let g=await r.json();
-   let usdOz=Number(g.price||g.ask||g.value);
-   let usdTry=d._lastFx?.rates?.USD;
-   if(usdOz>0&&usdTry>0){
-     let gramTry=(usdOz/31.1034768)*usdTry;
-     d.assets.forEach(a=>{let purity=goldPurity(a.type);if(purity){let ref=gramTry*purity;a.liveReference=ref;a.price=ref;a.autoPrice=true;changed=true}})
-     d._lastGold={gramTry,date:new Date().toISOString()};
-   }else errors.push('altın');
- }catch(e){errors.push('altın')}
- if(changed){d._lastPriceUpdate=new Date().toISOString();savePrivate(session.username,d)}
+   let r=await fetch('https://altingrafigi.com/api/v1/prices',{cache:'no-store'});
+   if(!r.ok)throw new Error('Altın servisi HTTP '+r.status);
+   let payload=await r.json();
+   let rows=Array.isArray(payload)?payload:(Array.isArray(payload.data)?payload.data:[]);
+   if(!rows.length)throw new Error('Altın verisi boş');
+
+   const norm=x=>String(x||'').toLocaleLowerCase('tr-TR')
+     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+     .replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c')
+     .replace(/[^a-z0-9]+/g,' ').trim();
+
+   const priceOf=(tests)=>{
+     for(const test of tests){
+       const found=rows.find(x=>{
+         let hay=norm((x.name||'')+' '+(x.symbol||''));
+         return test.every(t=>hay.includes(norm(t)));
+       });
+       if(found){
+         let v=Number(found.bid ?? found.buying ?? found.alis ?? found.price ?? found.ask);
+         if(Number.isFinite(v)&&v>0)return v;
+       }
+     }
+     return null;
+   };
+
+   const has=priceOf([['has altin'],['altin','ALTIN']]);
+   const p22=priceOf([['22 ayar']]);
+   const p14=priceOf([['14 ayar']]);
+   const q=priceOf([['yeni','ceyrek'],['ceyrek yeni'],['ceyrek']]);
+   const y=priceOf([['yeni','yarim'],['yarim yeni'],['yarim']]);
+   const t=priceOf([['yeni','tam'],['tam yeni'],['tam altin']]);
+   const c=priceOf([['yeni','cumhuriyet'],['cumhuriyet yeni'],['cumhuriyet']]);
+   const g=priceOf([['yeni','gremse'],['gremese yeni'],['gremse'],['gremese']]);
+
+   d.assets.forEach(a=>{
+     let type=String(a.type||'');
+     if(type==='Ata Altını')type='Ata Altın';
+     if(type==='Cumhuriyet / Ata Altın'||type==='Cumhuriyet/Ata Altın')type='Cumhuriyet Altını';
+     let p=null;
+     if(type==='Has Altın'||type==='24 Ayar Gram Altın'||type==='Gram Altın')p=has;
+     else if(type==='22 Ayar Altın'||type==='22 Ayar Bilezik')p=p22||(has?has*22/24:null);
+     else if(type==='18 Ayar Altın')p=has?has*18/24:null;
+     else if(type==='14 Ayar Altın')p=p14||(has?has*14/24:null);
+     else if(type==='Çeyrek Altın')p=q;
+     else if(type==='Yarım Altın')p=y;
+     else if(type==='Tam Altın')p=t;
+     else if(type==='Cumhuriyet Altını')p=c;
+     // Altın Grafiği tekli Ata'yı ayrı kotasyonlamıyor; en yakın Cumhuriyet/Ata referansı.
+     else if(type==='Ata Altın')p=c;
+     else if(type==='Gremse Altın')p=g;
+     else if(type==='Reşat Altını')p=null;
+
+     if(p&&p>0){
+       a.type=type;
+       a.price=p;
+       a.liveReference=p;
+       a.autoPrice=true;
+       goldUpdated++; changed=true;
+     }
+   });
+   d._lastGold={source:'altingrafigi.com',date:new Date().toISOString(),updatedAt:payload.updatedAt||null};
+   if(!goldUpdated)errors.push('altın eşleştirme');
+ }catch(e){
+   console.error('Altın fiyat güncelleme:',e);
+   errors.push('altın');
+ }
+
+ if(changed){
+   d._lastPriceUpdate=new Date().toISOString();
+   savePrivate(session.username,d);
+ }
  renderUser();
  let dd=privateData(session.username);
- if(dd._lastPriceUpdate)$('priceStatus').textContent='Son güncelleme: '+new Date(dd._lastPriceUpdate).toLocaleString('tr-TR')+(errors.length?' • Bazı fiyatlar alınamadı':'');
- else $('priceStatus').textContent='Fiyatlar: manuel';
+ if(dd._lastPriceUpdate){
+   $('priceStatus').textContent='Son güncelleme: '+new Date(dd._lastPriceUpdate).toLocaleString('tr-TR')+
+     ` • ${goldUpdated} altın, ${fxUpdated} döviz`;
+ }else $('priceStatus').textContent='Fiyatlar: manuel';
+
  if(showMessage){
-   if(changed&&!errors.length)alert('Güncel fiyatlar alındı.');
-   else if(changed)alert('Bazı fiyatlar güncellendi. Alınamayan fiyatlarda mevcut değer korundu.');
-   else alert('Fiyat servisine ulaşılamadı. Mevcut kayıtlı fiyatlar korundu.');
+   if(goldUpdated||fxUpdated)alert(`Fiyatlar güncellendi.\nAltın: ${goldUpdated} kayıt\nDöviz: ${fxUpdated} kayıt`+(errors.length?'\nBazı türler için fiyat bulunamadı.':''));
+   else alert('Fiyat servisine ulaşıldı ancak kayıtlarla eşleşen fiyat bulunamadı.');
  }
 }
 function openCash(){$('cashAmount').value='';$('cashNote').value='';$('cashModal').classList.remove('hidden')}
