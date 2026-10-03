@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v11.1 Cloud</title>
+<title>Birikim Hedefi • v11.2 Cloud Admin</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -112,7 +112,7 @@ body{background:
    <label>Yönetici kullanıcı adı</label><input id="setupUser" class="input" autocomplete="username" placeholder="Yönetici kullanıcı adı">
    <label>Yönetici şifresi</label><input id="setupPass" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter">
    <label>Şifre tekrar</label><input id="setupPass2" class="input" type="password" autocomplete="new-password" placeholder="Şifreyi tekrar girin">
-   <button class="btn full" onclick="createAdmin()">Yönetici Hesabını Oluştur</button><div id="setupMsg" class="msg"></div>
+   <button class="btn full" onclick="createAdmin()">Yönetici Hesabını Oluştur</button><button class="btn full secondary" onclick="showCloudLogin()">Zaten hesabım var • Giriş Yap</button><div id="setupMsg" class="msg"></div>
   </div>
   <div id="loginBox">
    <div style="width:54px;height:54px;margin:0 auto 14px;border-radius:16px;background:linear-gradient(145deg,#e7ca78,#b88e34);display:grid;place-items:center;color:#111;font-size:25px">♛</div><h1>Birikim Hedefi</h1><p>Kişisel hedeflerinize giriş yapın.</p>
@@ -242,6 +242,37 @@ firebase.initializeApp(firebaseConfig);
 const fbAuth=firebase.auth();
 const fbDb=firebase.firestore();
 let cloudReady=false, cloudUid=null, cloudCache=null;
+
+async function getOwnProfile(uid){
+  const snap=await fbDb.collection('users').doc(uid).get();
+  return snap.exists?(snap.data()||{}):{};
+}
+async function saveAdminDirectory(){
+  if(!fbAuth.currentUser||!session||session.role!=='admin')return;
+  const list=users().filter(x=>x.role!=='admin').map(x=>({
+    username:x.username, role:'user', active:x.active!==false
+  }));
+  await fbDb.collection('users').doc(fbAuth.currentUser.uid).set({
+    profile:{username:session.username,role:'admin',active:true},
+    managedUsers:list,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
+}
+async function loadAdminDirectory(profile){
+  const snap=await fbDb.collection('users').doc(fbAuth.currentUser.uid).get();
+  const obj=snap.exists?(snap.data()||{}):{};
+  const admin={username:profile.username||'admin',role:'admin',active:true,mustChangePassword:false};
+  const list=Array.isArray(obj.managedUsers)?obj.managedUsers.map(x=>({
+    username:x.username,role:'user',active:x.active!==false,mustChangePassword:false,password:''
+  })):[];
+  saveUsers([admin,...list]);
+  return admin;
+}
+function showCloudLogin(){
+  $('setupBox').classList.add('hidden');
+  $('loginBox').classList.remove('hidden');
+}
+
 function cloudEmail(username){
   return String(username||'').trim().toLowerCase()
     .replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c')
@@ -303,23 +334,51 @@ function savePrivate(u,v){
 function moneyVal(v){v=String(v??'').trim().replace(/\s/g,'').replace(/₺/g,'');if(!v)return 0;if(v.includes(',')&&v.includes('.'))v=v.replace(/\./g,'').replace(',','.');else if(v.includes(','))v=v.replace(',','.');return Number(v)||0}
 function formatMoneyInput(el){let n=moneyVal(el.value);if(el.value.trim()!==''&&!isNaN(n))el.value=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}
 
-function showInitialScreen(){let hasAdmin=users().some(x=>x.role==='admin');$('setupBox').classList.toggle('hidden',hasAdmin);$('loginBox').classList.toggle('hidden',!hasAdmin)}
-function createAdmin(){let n=$('setupUser').value.trim(),p=$('setupPass').value,p2=$('setupPass2').value,m=$('setupMsg');if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}if(p.length<8){m.textContent='Yönetici şifresi en az 8 karakter olmalı.';return}if(p!==p2){m.textContent='Şifreler eşleşmiyor.';return}saveUsers([{username:n,password:p,role:'admin',active:true,mustChangePassword:false}]);m.textContent='';showInitialScreen();$('loginUser').value=n;$('loginPass').focus()}
+function showInitialScreen(){
+  let hasAdmin=users().some(x=>x.role==='admin');
+  $('setupBox').classList.toggle('hidden',hasAdmin);
+  $('loginBox').classList.toggle('hidden',!hasAdmin);
+}
+async function createAdmin(){
+  let n=$('setupUser').value.trim(),p=$('setupPass').value,p2=$('setupPass2').value,m=$('setupMsg');
+  if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}
+  if(p.length<8){m.textContent='Yönetici şifresi en az 8 karakter olmalı.';return}
+  if(p!==p2){m.textContent='Şifreler eşleşmiyor.';return}
+  m.textContent='Yönetici bulutta oluşturuluyor...';
+  try{
+    const cred=await fbAuth.createUserWithEmailAndPassword(cloudEmail(n),p);
+    await fbDb.collection('users').doc(cred.user.uid).set({
+      profile:{username:n,role:'admin',active:true},
+      managedUsers:[],
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+    await fbAuth.signOut();
+    saveUsers([{username:n,password:'',role:'admin',active:true,mustChangePassword:false}]);
+    m.style.color='var(--green)';m.textContent='Bulut yönetici hesabı oluşturuldu.';
+    showInitialScreen();$('loginUser').value=n;$('loginPass').value='';$('loginPass').focus();
+  }catch(e){
+    console.error(e);
+    m.textContent=e&&e.code==='auth/email-already-in-use'?'Bu kullanıcı adı bulutta zaten kayıtlı. “Zaten hesabım var” ile giriş yapın.':'Yönetici oluşturulamadı: '+(e.message||'Firebase hatası');
+  }
+}
 showInitialScreen();
 
 async function login(){
  let u=$('loginUser').value.trim(),p=$('loginPass').value;
- let found=users().find(x=>x.username.toLowerCase()===u.toLowerCase()&&x.password===p);
+ if(!u||!p){$('loginMsg').textContent='Kullanıcı adı ve şifre girin.';return}
  $('loginMsg').textContent='Giriş yapılıyor...';
- // Yerel yönetici hesabı yönetim paneli için korunur.
- if(found&&found.role==='admin'){
-   if(!found.active){$('loginMsg').textContent='Bu hesap pasif durumda.';return}
-   session=found;$('loginMsg').textContent='';$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');renderAdmin();return;
- }
  try{
-   let cred=await fbAuth.signInWithEmailAndPassword(cloudEmail(u),p);
-   let local=users().find(x=>x.username.toLowerCase()===u.toLowerCase());
-   session=local&&local.role!=='admin'?local:{username:u,role:'user',active:true,mustChangePassword:false};
+   const cred=await fbAuth.signInWithEmailAndPassword(cloudEmail(u),p);
+   const profileDoc=await getOwnProfile(cred.user.uid);
+   const profile=profileDoc.profile||{};
+   if(profile.active===false){await fbAuth.signOut();$('loginMsg').textContent='Bu hesap pasif durumda.';return}
+   if(profile.role==='admin'){
+     session=await loadAdminDirectory({username:profile.username||u});
+     cloudUid=cred.user.uid; cloudReady=false; cloudCache=null;
+     $('loginMsg').textContent='';$('loginView').classList.add('hidden');$('adminView').classList.remove('hidden');
+     renderAdmin();return;
+   }
+   session={username:profile.username||u,role:'user',active:true,mustChangePassword:false};
    cloudUid=cred.user.uid;
    cloudCache=await cloudLoad();
    cloudReady=true;
@@ -329,6 +388,7 @@ async function login(){
    $('hello').textContent=`Hoş geldin, ${session.username}`;
    renderUser();
  }catch(e){
+   console.error(e);
    $('loginMsg').textContent='Kullanıcı adı veya şifre hatalı.';
  }
 }
@@ -346,10 +406,16 @@ async function addUser(){
    let secondary;
    try{secondary=firebase.app('userCreator')}catch(e){secondary=firebase.initializeApp(firebaseConfig,'userCreator')}
    let a=secondary.auth();
-   await a.createUserWithEmailAndPassword(cloudEmail(n),p);
+   let newCred=await a.createUserWithEmailAndPassword(cloudEmail(n),p);
+   await secondary.firestore().collection('users').doc(newCred.user.uid).set({
+     profile:{username:n,role:'user',active:true},
+     finance:{goals:[],history:[],assets:[],cash:0},
+     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+   },{merge:true});
    await a.signOut();
-   us.push({username:n,password:p,role:'user',active:true,mustChangePassword:false});
-   saveUsers(us);$('newUser').value='';$('newPass').value='';
+   us.push({username:n,password:'',role:'user',active:true,mustChangePassword:false});
+   saveUsers(us);
+   await saveAdminDirectory();$('newUser').value='';$('newPass').value='';
    m.style.color='var(--green)';m.textContent='Kullanıcı bulutta oluşturuldu.';
    renderAdmin();setTimeout(()=>{m.textContent='';m.style.color='var(--red)'},1800);
  }catch(e){
@@ -357,8 +423,8 @@ async function addUser(){
    m.textContent=e&&e.code==='auth/email-already-in-use'?'Bu kullanıcı bulutta zaten var.':'Kullanıcı oluşturulamadı: '+(e.message||'Firebase hatası');
  }
 }
-function toggleUser(n){let us=users(),u=us.find(x=>x.username===n);if(u){u.active=!u.active;saveUsers(us);renderAdmin()}}
-function deleteUser(n){if(!confirm(n+' kullanıcısını silmek istiyor musunuz? Hesap silinir; finansal kayıtlar yöneticiye gösterilmez.'))return;saveUsers(users().filter(x=>x.username!==n));renderAdmin()}
+async function toggleUser(n){let us=users(),u=us.find(x=>x.username===n);if(u){u.active=!u.active;saveUsers(us);await saveAdminDirectory();renderAdmin()}}
+async function deleteUser(n){if(!confirm(n+' kullanıcısını yönetici listesinden kaldırmak istiyor musunuz? Finansal kayıtlar yöneticiye gösterilmez.'))return;saveUsers(users().filter(x=>x.username!==n));await saveAdminDirectory();renderAdmin()}
 function openPass(n){resetUser=n;$('passDesc').textContent=n+' kullanıcısı için geçici şifre belirleyin. Kullanıcı sonraki girişte kendi şifresini oluşturacak.';$('resetPass').value='';$('passModal').classList.remove('hidden')}
 function closePass(){$('passModal').classList.add('hidden')}
 function savePass(){let p=$('resetPass').value;if(p.length<8){alert('Geçici şifre en az 8 karakter olmalı.');return}let us=users(),u=us.find(x=>x.username===resetUser);if(u){u.password=p;u.mustChangePassword=true;saveUsers(us)}closePass()}
