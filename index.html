@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v12.5 MT Logo Fix</title>
+<title>Birikim Hedefi • v12.6 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -591,7 +591,7 @@ function assetCard(a){let total=(Number(a.amount)||0)*(Number(a.price)||0),pl=as
 function fillAssetTypes(mode,selected){
  let opts=mode==='gold'?[
  ['Has Altın','Has Altın (gr)'],
- ['24 Ayar Gram Altın','24 Ayar Gram Altın'],
+ ['Gram Altın','Gram Altın'],
  ['22 Ayar Altın','22 Ayar Altın (gr)'],
  ['22 Ayar Bilezik','22 Ayar Bilezik (gr)'],
  ['18 Ayar Altın','18 Ayar Altın (gr)'],
@@ -606,6 +606,7 @@ function fillAssetTypes(mode,selected){
  ]:[['USD','Dolar (USD)'],['EUR','Euro (EUR)'],['GBP','Sterlin (GBP)']];
  $('aType').innerHTML=opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('');
  if(selected){
+   if(selected==='24 Ayar Gram Altın')selected='Gram Altın';
    if(selected==='Ata Altını')selected='Ata Altın';
    if(selected==='Cumhuriyet / Ata Altın'||selected==='Cumhuriyet/Ata Altın')selected='Cumhuriyet Altını';
    if(opts.some(o=>o[0]===selected))$('aType').value=selected;
@@ -681,7 +682,8 @@ async function refreshPrices(showMessage=false){
      if(type==='Ata Altını')type='Ata Altın';
      if(type==='Cumhuriyet / Ata Altın'||type==='Cumhuriyet/Ata Altın')type='Cumhuriyet Altını';
      let p=null;
-     if(type==='Has Altın'||type==='24 Ayar Gram Altın'||type==='Gram Altın')p=has;
+     if(type==='24 Ayar Gram Altın'){ type='Gram Altın'; a.type='Gram Altın'; changed=true; }
+     if(type==='Has Altın'||type==='Gram Altın')p=has;
      else if(type==='22 Ayar Altın'||type==='22 Ayar Bilezik')p=p22||(has?has*22/24:null);
      else if(type==='18 Ayar Altın')p=has?has*18/24:null;
      else if(type==='14 Ayar Altın')p=p14||(has?has*14/24:null);
