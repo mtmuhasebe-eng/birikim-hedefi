@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v11.2 Cloud Admin</title>
+<title>Birikim Hedefi • v11.3 Cloud Admin</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -420,7 +420,23 @@ async function addUser(){
    renderAdmin();setTimeout(()=>{m.textContent='';m.style.color='var(--red)'},1800);
  }catch(e){
    console.error(e);
-   m.textContent=e&&e.code==='auth/email-already-in-use'?'Bu kullanıcı bulutta zaten var.':'Kullanıcı oluşturulamadı: '+(e.message||'Firebase hatası');
+   if(e&&e.code==='auth/email-already-in-use'){
+     let us=users();
+     if(!us.some(x=>x.username.toLowerCase()===n.toLowerCase())){
+       us.push({username:n,password:'',role:'user',active:true,mustChangePassword:false});
+       saveUsers(us);
+     }
+     try{
+       await saveAdminDirectory();
+       $('newUser').value='';$('newPass').value='';
+       m.style.color='var(--green)';
+       m.textContent='Mevcut bulut kullanıcısı panele bağlandı. Birikim verileri korundu.';
+       renderAdmin();
+       setTimeout(()=>{m.textContent='';m.style.color='var(--red)'},2600);
+     }catch(syncErr){console.error(syncErr);m.textContent='Kullanıcı bulundu fakat panele bağlanamadı.'}
+     return;
+   }
+   m.textContent='Kullanıcı oluşturulamadı: '+(e.message||'Firebase hatası');
  }
 }
 async function toggleUser(n){let us=users(),u=us.find(x=>x.username===n);if(u){u.active=!u.active;saveUsers(us);await saveAdminDirectory();renderAdmin()}}
