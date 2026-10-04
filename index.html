@@ -129,6 +129,18 @@ body{background:
 .mt-goal-splitbar{height:7px;margin-top:8px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.08)}.mt-goal-splitbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#9f7c18,#f0d36d)}
 </style>
 
+
+<style id="mt-home-goal-visible-css">
+.mt-home-goal-progress{margin-top:12px;padding:12px 13px;border:1px solid rgba(212,175,55,.20);border-radius:13px;background:rgba(212,175,55,.035)}
+.mt-home-goal-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:9px}
+.mt-home-goal-head>span{display:flex;flex-direction:column;gap:2px}
+.mt-home-goal-head>span:last-child{text-align:right;align-items:flex-end}
+.mt-home-goal-head b{font-size:15px;color:#f0d36d;line-height:1}
+.mt-home-goal-head small{font-size:10px;color:#8f8f95}
+.mt-home-goal-chart{height:8px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.09)}
+.mt-home-goal-chart i{display:block;height:100%;min-width:2px;border-radius:999px;background:linear-gradient(90deg,#9f7c18,#f0d36d)}
+</style>
+
 </head>
 <body>
 <div id="splash"><div class="splash-inner"><img id="mtSplashLogo" class="mt-logo-img splash-logo-img" alt="MT Logo"><div class="splash-text">Yükleniyor…</div></div></div>
@@ -857,7 +869,15 @@ function v10Tab(name,btn){
 }
 function v10Dashboard(d){
  let saved=d.goals.reduce((a,g)=>a+Number(g.saved||0),0),gold=d.assets.filter(a=>isGold(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),fx=d.assets.filter(a=>isFx(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),total=d.cash+saved+gold+fx;
- if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Math.min(100,(Number(g.saved)||0)/(Number(g.target)||1)*100);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>${fmt(g.saved)} / ${fmt(g.target)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div><small style="display:flex;justify-content:space-between;margin-top:7px"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>%${Math.max(0,100-p).toFixed(1).replace('.',',')} kaldı</span></small><div class="mt-goal-splitbar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
+ if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Math.min(100,(Number(g.saved)||0)/(Number(g.target)||1)*100);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>${fmt(g.saved)} / ${fmt(g.target)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div><div class="mt-home-goal-progress">
+            <div class="mt-home-goal-head">
+              <span><b>%${p.toFixed(1).replace('.',',')}</b><small>Tamamlanan</small></span>
+              <span><b>%${Math.max(0,100-p).toFixed(1).replace('.',',')}</b><small>Kalan</small></span>
+            </div>
+            <div class="mt-home-goal-chart">
+              <i style="width:${Math.max(0,Math.min(100,p))}%"></i>
+            </div>
+          </div></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
  if($('donutTotal'))$('donutTotal').textContent=fmt(total); let pl=(d.assets||[]).reduce((t,a)=>t+assetPL(a),0);if($('sPL')){$('sPL').textContent=(pl>=0?'+':'-')+fmt(Math.abs(pl));$('sPL').className=pl>=0?'profit':'loss'};
  if($('goldTotalMini'))$('goldTotalMini').textContent=fmt(gold);
  if($('fxTotalMini'))$('fxTotalMini').textContent=fmt(fx);
