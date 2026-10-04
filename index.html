@@ -119,6 +119,16 @@ body{background:
   <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico?v=2">
   <link rel="apple-touch-icon" href="./favicon.png?v=2">
 <script>function mtMoneyNum(v){const x=String(v??'').trim();if(/^\d{1,3}(?:\.\d{3})*(?:,\d+)?$/.test(x))return Number(x.replace(/\./g,'').replace(',','.'))||0;return Number(x.replace(',','.'))||0;}</script>
+
+<style id="mt-goal-visual-css">
+.mt-goal-visual{display:flex;align-items:center;gap:18px;margin-top:14px;padding:14px;border:1px solid rgba(212,175,55,.18);border-radius:16px;background:rgba(255,255,255,.018)}
+.mt-goal-ring{--done:0;width:88px;height:88px;min-width:88px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:conic-gradient(#d4af37 calc(var(--done)*1%),rgba(255,255,255,.08) 0)}
+.mt-goal-ring:after{content:"";position:absolute;inset:8px;border-radius:50%;background:#0d0d0f}
+.mt-goal-ring b,.mt-goal-ring small{position:relative;z-index:1}.mt-goal-ring b{color:#f3d777;font-size:16px}.mt-goal-ring small{font-size:9px;color:#8f8f95;margin-top:2px}
+.mt-goal-numbers{flex:1;display:grid;gap:9px}.mt-goal-numbers div{display:flex;justify-content:space-between;gap:12px;font-size:12px}.mt-goal-numbers span{color:#8f8f95}.mt-goal-numbers strong{color:#f3d777}
+.mt-goal-splitbar{height:7px;margin-top:8px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.08)}.mt-goal-splitbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#9f7c18,#f0d36d)}
+</style>
+
 </head>
 <body>
 <div id="splash"><div class="splash-inner"><img id="mtSplashLogo" class="mt-logo-img splash-logo-img" alt="MT Logo"><div class="splash-text">Yükleniyor…</div></div></div>
@@ -258,6 +268,10 @@ const firebaseConfig = {
   appId: "1:371414588055:web:7fe54e5a9e693c806ee7d2"
 };
 firebase.initializeApp(firebaseConfig);
+try{
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    .catch(e=>console.warn('Session persistence:',e));
+}catch(e){console.warn('Session persistence:',e);}
 const fbAuth=firebase.auth();
 const fbDb=firebase.firestore();
 let cloudReady=false, cloudUid=null, cloudCache=null;
@@ -439,6 +453,10 @@ async function idleLogout(){
 ['pointerdown','keydown','touchstart','scroll'].forEach(ev=>document.addEventListener(ev,touchActivity,{passive:true}));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&fbAuth.currentUser&&session)armIdleTimer()});
 fbAuth.onAuthStateChanged(async user=>{
+ if(user && sessionStorage.getItem('mt_tab_authenticated')!=='1'){
+   try{await fbAuth.signOut()}catch(e){console.warn('Session logout:',e)}
+   return;
+ }
   if(user){
     const last=Number(localStorage.getItem(LAST_ACTIVITY_KEY)||0);
     if(last&&Date.now()-last>=IDLE_LIMIT_MS){await idleLogout();authBootFinished=true;return;}
@@ -453,6 +471,7 @@ async function login(){
  $('loginMsg').textContent='Giriş yapılıyor...';
  try{
    const cred=await fbAuth.signInWithEmailAndPassword(cloudEmail(u),p);
+   sessionStorage.setItem('mt_tab_authenticated','1');
    const profileDoc=await getOwnProfile(cred.user.uid);
    const profile=profileDoc.profile||{};
    if(profile.active===false){await fbAuth.signOut();$('loginMsg').textContent='Bu hesap pasif durumda.';return}
@@ -559,7 +578,16 @@ function renderUser(){syncMobileNav();let d=privateData(session.username),saved=
 let golds=d.assets.filter(a=>isGold(a.type)),fxs=d.assets.filter(a=>isFx(a.type));
 $('goldAssets').innerHTML=golds.length?golds.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz altın eklenmedi</b>Gram, çeyrek, yarım veya tam altın ekleyebilirsiniz.</div>';
 $('fxAssets').innerHTML=fxs.length?fxs.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz döviz eklenmedi</b>Dolar, Euro veya Sterlin ekleyebilirsiniz.</div>';
-$('goals').innerHTML=d.goals.length?d.goals.map(g=>{let p=Math.min(100,g.saved/g.target*100),months=g.monthly>0?Math.ceil(Math.max(0,g.target-g.saved)/g.monthly):null;return `<div class="card"><div class="goal-title">${esc(g.name)}</div><div class="goal-sub">${months===0?'🎉 Hedef tamamlandı':months?`⏳ Tahmini tamamlanmasına <b style="color:var(--text)">${months} ay</b> var`:'⏳ Aylık plan belirlenmedi'}</div><div class="money-row"><span>${fmt(g.saved)}</span><span>${fmt(g.target)}</span></div><div class="bar"><div class="fill" style="width:${p}%"></div></div><div class="goal-bottom"><span>%${p.toFixed(1).replace('.',',')} tamamlandı • %${Math.max(0,100-p).toFixed(1).replace('.',',')} kaldı</span><span>Aylık: ${fmt(g.monthly)}</span></div><div class="goal-actions"><button class="btn small" onclick="openMoney('${g.id}','add')">+ Para Ekle</button><button class="btn small secondary" onclick="openMoney('${g.id}','sub')">Para Çıkar</button><button class="btn small secondary" onclick="openEditGoal('${g.id}')">Hedefi Düzenle</button><button class="btn small danger" onclick="removeGoal('${g.id}')">Hedefi Sil</button></div></div>`}).join(''):'<div class="card empty" style="grid-column:1/-1"><b>İlk hedefini oluştur</b>Araba, ev, tatil veya istediğin başka bir şey için birikmeye başla.</div>';
+$('goals').innerHTML=d.goals.length?d.goals.map(g=>{let p=Math.min(100,g.saved/g.target*100),months=g.monthly>0?Math.ceil(Math.max(0,g.target-g.saved)/g.monthly):null;return `<div class="card"><div class="goal-title">${esc(g.name)}</div><div class="goal-sub">${months===0?'🎉 Hedef tamamlandı':months?`⏳ Tahmini tamamlanmasına <b style="color:var(--text)">${months} ay</b> var`:'⏳ Aylık plan belirlenmedi'}</div><div class="money-row"><span>${fmt(g.saved)}</span><span>${fmt(g.target)}</span></div><div class="bar"><div class="fill" style="width:${p}%"></div></div><div class="goal-bottom"><span>%${p.toFixed(1).replace('.',',')} tamamlandı • %${Math.max(0,100-p).toFixed(1).replace('.',',')} kaldı</span><span>Aylık: ${fmt(g.monthly)}</span></div>
+        <div class="mt-goal-visual">
+          <div class="mt-goal-ring" style="--done:${Math.max(0,Math.min(100,p))}">
+            <b>%${p.toFixed(1).replace('.',',')}</b><small>Tamamlandı</small>
+          </div>
+          <div class="mt-goal-numbers">
+            <div><span>Tamamlanan</span><strong>%${p.toFixed(1).replace('.',',')}</strong></div>
+            <div><span>Kalan</span><strong>%${Math.max(0,100-p).toFixed(1).replace('.',',')}</strong></div>
+          </div>
+        </div><div class="goal-actions"><button class="btn small" onclick="openMoney('${g.id}','add')">+ Para Ekle</button><button class="btn small secondary" onclick="openMoney('${g.id}','sub')">Para Çıkar</button><button class="btn small secondary" onclick="openEditGoal('${g.id}')">Hedefi Düzenle</button><button class="btn small danger" onclick="removeGoal('${g.id}')">Hedefi Sil</button></div></div>`}).join(''):'<div class="card empty" style="grid-column:1/-1"><b>İlk hedefini oluştur</b>Araba, ev, tatil veya istediğin başka bir şey için birikmeye başla.</div>';
 $('history').innerHTML=d.history.length?d.history.slice(0,30).map(h=>`<div class="hist"><div><b>${esc(h.goal)}</b><small>${esc(h.note||'İşlem')} • ${new Date(h.date).toLocaleString('tr-TR')}</small></div><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end"><b class="${h.type==='add'?'plus':'minus'}">${h.type==='add'?'+':'-'}${fmt(h.amount)}</b>${h.locked||h.kind==='system'?'':`<button class="btn small secondary" onclick="openEditTx('${js(h.id)}')">Düzenle</button><button class="btn small danger" onclick="deleteTx('${js(h.id)}')">Sil</button>`}</div></div>`).join(''):'<div class="card empty"><b>Henüz işlem yok</b>Bir hedefe para eklediğinizde burada görünür.</div>';v10Dashboard(d);recordDailySnapshot(d);renderAnalytics(d)}
 
 function txGoal(d,h){return h.goalId?d.goals.find(g=>g.id===h.goalId):d.goals.find(g=>g.name===h.goal)}
@@ -829,7 +857,7 @@ function v10Tab(name,btn){
 }
 function v10Dashboard(d){
  let saved=d.goals.reduce((a,g)=>a+Number(g.saved||0),0),gold=d.assets.filter(a=>isGold(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),fx=d.assets.filter(a=>isFx(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),total=d.cash+saved+gold+fx;
- if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Math.min(100,(Number(g.saved)||0)/(Number(g.target)||1)*100);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>${fmt(g.saved)} / ${fmt(g.target)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div><small style="display:flex;justify-content:space-between;margin-top:7px"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>%${Math.max(0,100-p).toFixed(1).replace('.',',')} kaldı</span></small></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
+ if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Math.min(100,(Number(g.saved)||0)/(Number(g.target)||1)*100);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>${fmt(g.saved)} / ${fmt(g.target)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div><small style="display:flex;justify-content:space-between;margin-top:7px"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>%${Math.max(0,100-p).toFixed(1).replace('.',',')} kaldı</span></small><div class="mt-goal-splitbar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
  if($('donutTotal'))$('donutTotal').textContent=fmt(total); let pl=(d.assets||[]).reduce((t,a)=>t+assetPL(a),0);if($('sPL')){$('sPL').textContent=(pl>=0?'+':'-')+fmt(Math.abs(pl));$('sPL').className=pl>=0?'profit':'loss'};
  if($('goldTotalMini'))$('goldTotalMini').textContent=fmt(gold);
  if($('fxTotalMini'))$('fxTotalMini').textContent=fmt(fx);
