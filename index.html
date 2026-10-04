@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v13.5 MT Logo Fix</title>
+<title>Birikim Hedefi • v13.6 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -954,33 +954,5 @@ function exportPDF(){let d=privateData(session.username),p=portfolioParts(d),sna
 
 <script>
 window.addEventListener('load',()=>{setTimeout(()=>{let sp=document.getElementById('splash');if(sp){sp.style.opacity='0';setTimeout(()=>sp.remove(),360)}},650)});
-</script>
-
-<script id="v135-new-password-only">
-(function(){
- function isLoginPassword(el){
-   const x=((el.id||'')+' '+(el.name||'')+' '+(el.placeholder||'')).toLowerCase();
-   return x.includes('login') || x==='password' || x.includes('giriş') || x.includes('giris');
- }
- function isNewPassword(el){
-   if(!el || el.type!=='password' || isLoginPassword(el)) return false;
-   const x=((el.id||'')+' '+(el.name||'')+' '+(el.placeholder||'')).toLowerCase();
-   return x.includes('new') || x.includes('yeni') || x.includes('pass') || x.includes('şifre') || x.includes('sifre');
- }
- function valid(el){
-   if(!isNewPassword(el)) return true;
-   if(String(el.value||'').length<6){
-     alert('Yeni şifre en az 6 karakter olmalıdır.');
-     el.focus(); return false;
-   }
-   return true;
- }
- document.addEventListener('click',function(e){
-   const b=e.target.closest('button'); if(!b)return;
-   const box=b.closest('.modal,.card,form')||document;
-   const fields=[...box.querySelectorAll('input[type="password"]')].filter(x=>x.offsetParent!==null && isNewPassword(x));
-   if(fields.length && !fields.every(valid)){e.preventDefault();e.stopImmediatePropagation();}
- },true);
-})();
 </script>
 </body></html>
