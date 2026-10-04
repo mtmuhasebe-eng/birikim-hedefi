@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v12.9 MT Logo Fix</title>
+<title>Birikim Hedefi • v13.0 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -153,13 +153,7 @@ body{background:
     <div><div class="v10-kicker">TOPLAM PORTFÖY DEĞERİ</div><div id="portfolioTotal" class="v10-total">0,00 ₺</div><div id="priceStatus" class="v10-muted">Fiyatlar: manuel</div></div>
     <div class="v10-chart"><svg viewBox="0 0 360 110" preserveAspectRatio="none"><defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8b557" stop-opacity=".25"/><stop offset="1" stop-color="#d8b557" stop-opacity="0"/></linearGradient></defs><path d="M0,86 C35,82 42,61 75,66 S125,78 150,55 S190,68 216,42 S260,55 286,30 S326,40 360,14 L360,110 L0,110Z" fill="url(#area)"/><path d="M0,86 C35,82 42,61 75,66 S125,78 150,55 S190,68 216,42 S260,55 286,30 S326,40 360,14" fill="none" stroke="#d8b557" stroke-width="3" stroke-linecap="round"/></svg></div>
    </div>
-   <section class="v10-panel" id="generalGoalPanel" style="margin:18px 0">
- <div class="v10-panel-head"><div><span>GENEL BİRİKİM HEDEFİ</span><h2 id="generalGoalTitle">Hedef belirlenmedi</h2></div>
- <div class="v10-inline"><input id="generalTargetInput" class="input" inputmode="decimal" placeholder="Örn. 100.000" style="max-width:180px"><button class="btn" onclick="saveGeneralTarget()">Hedefi Kaydet</button></div></div>
- <div class="goal-bottom" style="margin-top:14px;gap:12px;flex-wrap:wrap"><span>Mevcut: <b id="generalCurrent">0,00 ₺</b></span><span>Kalan: <b id="generalRemain">0,00 ₺</b></span><span>Tamamlanan: <b id="generalDone">%0,0</b></span><span>Kalan yüzde: <b id="generalLeftPct">%100,0</b></span></div>
- <div class="bar" style="margin-top:12px"><div id="generalGoalFill" class="fill" style="width:0%"></div></div>
-</section>
-<div class="v10-summary">
+   <div class="v10-summary">
     <article><div class="v10-sicon blue">▣</div><span>Nakit</span><strong id="sCash">0,00 ₺</strong><button onclick="openCash()">+ Para Ekle</button></article>
     <article><div class="v10-sicon gold">◆</div><span>Altın + Döviz</span><strong id="sAssets">0,00 ₺</strong><button onclick="v10Tab('assets')">Varlıkları Gör</button></article>
     <article><div class="v10-sicon green">◎</div><span>Hedeflerde</span><strong id="sSaved">0,00 ₺</strong><button onclick="v10Tab('goals')">Hedefleri Gör</button></article>
@@ -577,29 +571,19 @@ function renderUser(){syncMobileNav();let d=privateData(session.username),saved=
 let golds=d.assets.filter(a=>isGold(a.type)),fxs=d.assets.filter(a=>isFx(a.type));
 $('goldAssets').innerHTML=golds.length?golds.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz altın eklenmedi</b>Gram, çeyrek, yarım veya tam altın ekleyebilirsiniz.</div>';
 $('fxAssets').innerHTML=fxs.length?fxs.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz döviz eklenmedi</b>Dolar, Euro veya Sterlin ekleyebilirsiniz.</div>';
-$('goals').innerHTML=d.goals.length?d.goals.map(g=>{let p=Math.min(100,g.saved/g.target*100),months=g.monthly>0?Math.ceil(Math.max(0,g.target-g.saved)/g.monthly):null;return `<div class="card"><div class="goal-title">${esc(g.name)}</div><div class="goal-sub">${months===0?'🎉 Hedef tamamlandı':months?`⏳ Tahmini tamamlanmasına <b style="color:var(--text)">${months} ay</b> var`:'⏳ Aylık plan belirlenmedi'}</div><div class="money-row"><span>${fmt(g.saved)}</span><span>${fmt(g.target)}</span></div><div class="bar"><div class="fill" style="width:${p}%"></div></div><div class="goal-bottom"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>Aylık: ${fmt(g.monthly)}</span></div><div class="goal-actions"><button class="btn small" onclick="openMoney('${g.id}','add')">+ Para Ekle</button><button class="btn small secondary" onclick="openMoney('${g.id}','sub')">Para Çıkar</button><button class="btn small secondary" onclick="openEditGoal('${g.id}')">Hedefi Düzenle</button><button class="btn small danger" onclick="removeGoal('${g.id}')">Hedefi Sil</button></div></div>`}).join(''):'<div class="card empty" style="grid-column:1/-1"><b>İlk hedefini oluştur</b>Araba, ev, tatil veya istediğin başka bir şey için birikmeye başla.</div>';
-$('history').innerHTML=d.history.length?d.history.slice(0,30).map(h=>`<div class="hist"><div><b>${esc(h.goal)}</b><small>${esc(h.note||'İşlem')} • ${new Date(h.date).toLocaleString('tr-TR')}</small></div><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end"><b class="${h.type==='add'?'plus':'minus'}">${h.type==='add'?'+':'-'}${fmt(h.amount)}</b>${h.locked||h.kind==='system'?'':`<button class="btn small secondary" onclick="openEditTx('${js(h.id)}')">Düzenle</button><button class="btn small danger" onclick="deleteTx('${js(h.id)}')">Sil</button>`}</div></div>`).join(''):'<div class="card empty"><b>Henüz işlem yok</b>Bir hedefe para eklediğinizde burada görünür.</div>';renderGeneralTarget(d);v10Dashboard(d);recordDailySnapshot(d);renderAnalytics(d)}
+$('goals').innerHTML=d.goals.length?d.goals.map(g=>{
+ let portfolio=(Number(d.cash)||0)+d.goals.reduce((z,x)=>z+(Number(x.saved)||0),0)+d.assets.reduce((z,x)=>z+(Number(x.amount)||0)*(Number(x.price)||0),0);
+ let target=Number(g.target)||0,remain=Math.max(0,target-portfolio),p=target?Math.min(100,portfolio/target*100):0,left=Math.max(0,100-p);
+ let bars=[18,30,43,57,70,84,100].map((x,i)=>`<i style="display:block;flex:1;height:${Math.max(5,p*x/100)}%;background:${i===6?'var(--gold)':'rgba(216,181,87,.35)'};border-radius:4px 4px 2px 2px"></i>`).join('');
+ return `<div class="card"><div class="goal-title">${esc(g.name)}</div><div class="goal-sub">Hedef: ${fmt(target)}</div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px"><div><small>Toplam varlığım</small><b style="display:block;margin-top:3px">${fmt(portfolio)}</b></div><div><small>Hedefime kalan</small><b style="display:block;margin-top:3px">${fmt(remain)}</b></div><div><small>Tamamlanan</small><b style="display:block;margin-top:3px">%${p.toFixed(1).replace('.',',')}</b></div><div><small>Kalan</small><b style="display:block;margin-top:3px">%${left.toFixed(1).replace('.',',')}</b></div></div>
+ <div class="bar"><div class="fill" style="width:${p}%"></div></div>
+ <div style="height:72px;display:flex;align-items:flex-end;gap:5px;padding:8px;margin-top:8px;border:1px solid var(--line);border-radius:12px">${bars}</div>
+ <div class="goal-bottom"><span>${fmt(Math.min(portfolio,target))} / ${fmt(target)}</span><span>%${p.toFixed(1).replace('.',',')}</span></div>
+ <div class="goal-actions"><button class="btn small" onclick="openMoney('${g.id}','add')">+ Para Ekle</button><button class="btn small secondary" onclick="openMoney('${g.id}','sub')">Para Çıkar</button><button class="btn small secondary" onclick="openEditGoal('${g.id}')">Hedefi Düzenle</button><button class="btn small danger" onclick="removeGoal('${g.id}')">Hedefi Sil</button></div></div>`}).join(''):'<div class="card empty" style="grid-column:1/-1"><b>İlk hedefini oluştur</b>Araba, ev, tatil veya istediğin başka bir şey için birikmeye başla.</div>';
+$('history').innerHTML=d.history.length?d.history.slice(0,30).map(h=>`<div class="hist"><div><b>${esc(h.goal)}</b><small>${esc(h.note||'İşlem')} • ${new Date(h.date).toLocaleString('tr-TR')}</small></div><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end"><b class="${h.type==='add'?'plus':'minus'}">${h.type==='add'?'+':'-'}${fmt(h.amount)}</b>${h.locked||h.kind==='system'?'':`<button class="btn small secondary" onclick="openEditTx('${js(h.id)}')">Düzenle</button><button class="btn small danger" onclick="deleteTx('${js(h.id)}')">Sil</button>`}</div></div>`).join(''):'<div class="card empty"><b>Henüz işlem yok</b>Bir hedefe para eklediğinizde burada görünür.</div>';v10Dashboard(d);recordDailySnapshot(d);renderAnalytics(d)}
 
 
-function saveGeneralTarget(){
- let d=privateData(session.username),v=moneyVal($('generalTargetInput').value);
- if(v<=0){alert('Geçerli bir genel hedef tutarı girin.');return}
- d.generalTarget=v;savePrivate(session.username,d);renderUser()
-}
-function renderGeneralTarget(d){
- let target=Number(d.generalTarget)||0;
- let saved=(d.goals||[]).reduce((a,g)=>a+(Number(g.saved)||0),0);
- let assets=(d.assets||[]).reduce((a,x)=>a+(Number(x.amount)||0)*(Number(x.price)||0),0);
- let current=(Number(d.cash)||0)+saved+assets;
- let remain=Math.max(0,target-current),done=target?Math.min(100,current/target*100):0,left=Math.max(0,100-done);
- if($('generalGoalTitle'))$('generalGoalTitle').textContent=target?fmt(target):'Hedef belirlenmedi';
- if($('generalCurrent'))$('generalCurrent').textContent=fmt(current);
- if($('generalRemain'))$('generalRemain').textContent=fmt(remain);
- if($('generalDone'))$('generalDone').textContent='%'+done.toFixed(1).replace('.',',');
- if($('generalLeftPct'))$('generalLeftPct').textContent='%'+left.toFixed(1).replace('.',',');
- if($('generalGoalFill'))$('generalGoalFill').style.width=done+'%';
- if($('generalTargetInput')&&document.activeElement!==$('generalTargetInput'))$('generalTargetInput').value=target?new Intl.NumberFormat('tr-TR',{maximumFractionDigits:2}).format(target):'';
-}
 
 function txGoal(d,h){return h.goalId?d.goals.find(g=>g.id===h.goalId):d.goals.find(g=>g.name===h.goal)}
 function reverseTx(d,h){
@@ -872,7 +856,7 @@ function v10Tab(name,btn){
 }
 function v10Dashboard(d){
  let saved=d.goals.reduce((a,g)=>a+Number(g.saved||0),0),gold=d.assets.filter(a=>isGold(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),fx=d.assets.filter(a=>isFx(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),total=d.cash+saved+gold+fx;
- if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Math.min(100,(Number(g.saved)||0)/(Number(g.target)||1)*100);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>${fmt(g.saved)} / ${fmt(g.target)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
+ if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Number(g.target)?Math.min(100,total/Number(g.target)*100):0,left=Math.max(0,100-p),remain=Math.max(0,Number(g.target)-total);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>Hedef ${fmt(g.target)} • Kalan ${fmt(remain)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div><small style="display:flex;justify-content:space-between;margin-top:6px"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>%${left.toFixed(1).replace('.',',')} kaldı</span></small></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
  if($('donutTotal'))$('donutTotal').textContent=fmt(total); let pl=(d.assets||[]).reduce((t,a)=>t+assetPL(a),0);if($('sPL')){$('sPL').textContent=(pl>=0?'+':'-')+fmt(Math.abs(pl));$('sPL').className=pl>=0?'profit':'loss'};
  if($('goldTotalMini'))$('goldTotalMini').textContent=fmt(gold);
  if($('fxTotalMini'))$('fxTotalMini').textContent=fmt(fx);
