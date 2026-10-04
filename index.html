@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v12.7 MT Logo Fix</title>
+<title>Birikim Hedefi • v12.8 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -886,4 +886,26 @@ function exportPDF(){let d=privateData(session.username),p=portfolioParts(d),sna
 <script>
 window.addEventListener('load',()=>{setTimeout(()=>{let sp=document.getElementById('splash');if(sp){sp.style.opacity='0';setTimeout(()=>sp.remove(),360)}},650)});
 </script>
-</body></html>
+<style>
+.v128box{margin:14px 0;padding:16px;border:1px solid rgba(212,175,55,.28);border-radius:18px;background:rgba(212,175,55,.07)}
+.v128bar{height:9px;background:#222;border-radius:20px;overflow:hidden;margin-top:10px}.v128fill{height:100%;background:#d4af37}.v128stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:13px}
+</style>
+<script>
+(function(){
+ const money=n=>(+n||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₺';
+ const parseTR=v=>+(String(v||'').replace(/\./g,'').replace(',','.'))||0;
+ function total(d){return (+d.cash||0)+(d.goals||[]).reduce((z,x)=>z+(+x.saved||0),0)+(d.assets||[]).reduce((z,x)=>z+(+x.amount||0)*(+x.price||0),0)}
+ function group(el){let x=el.value.replace(/\./g,'').replace(/[^\d,]/g,''),p=x.split(',');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');el.value=p[0]+(p.length>1?','+p[1].slice(0,2):'')}
+ document.addEventListener('input',e=>{if(e.target.tagName!=='INPUT'||e.target.type!=='text')return;let k=((e.target.id||'')+' '+(e.target.placeholder||'')).toLowerCase();if(/tutar|hedef|fiyat|maliyet|kasa|aylık|aylik/.test(k))group(e.target)});
+ function inject(){
+  if(!window.session||session.role!=='user'||typeof privateData!=='function')return;
+  let d=privateData(session.username),host=document.querySelector('#homeScreen')||document.querySelector('main');if(!host)return;
+  let old=document.getElementById('v128general');if(old)old.remove();
+  let t=+d.generalTarget||0,v=total(d),done=t?Math.min(100,v/t*100):0,left=Math.max(0,t-v);
+  let b=document.createElement('div');b.id='v128general';b.className='v128box';
+  b.innerHTML=`<b>Genel Birikim Hedefi</b><div style="margin-top:8px"><input id="v128target" type="text" inputmode="decimal" placeholder="Örn. 100.000" value="${t?t.toLocaleString('tr-TR'):''}"> <button id="v128save">Kaydet</button></div><div class="v128stats"><span>Toplam: <b>${money(v)}</b></span><span>Kalan: <b>${money(left)}</b></span><span>Tamamlanan: <b>%${done.toFixed(1).replace('.',',')}</b></span><span>Kalan yüzde: <b>%${(100-done).toFixed(1).replace('.',',')}</b></span></div><div class="v128bar"><div class="v128fill" style="width:${done}%"></div></div>`;
+  host.prepend(b);document.getElementById('v128target').oninput=e=>group(e.target);document.getElementById('v128save').onclick=()=>{d.generalTarget=parseTR(document.getElementById('v128target').value);savePrivate(session.username,d);inject()};
+ }
+ const rr=window.renderUser;if(typeof rr==='function')window.renderUser=function(){let x=rr.apply(this,arguments);setTimeout(inject,0);return x};setTimeout(inject,700);
+})();
+</script></body></html>
