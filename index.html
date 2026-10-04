@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v13.6 MT Logo Fix</title>
+<title>Birikim Hedefi • v13.7 Stabil</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -118,17 +118,7 @@ body{background:
   <link rel="icon" type="image/png" sizes="512x512" href="./favicon.png?v=2">
   <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico?v=2">
   <link rel="apple-touch-icon" href="./favicon.png?v=2">
-<style id="v133-pro-home">
-#homeScreen .v10-hero{border:1px solid rgba(216,181,87,.18);box-shadow:0 22px 70px rgba(0,0,0,.32);min-height:210px}
-#homeScreen .v10-summary{gap:14px}
-#homeScreen .v10-stat{background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.075);box-shadow:0 10px 30px rgba(0,0,0,.16);transition:.18s}
-#homeScreen .v10-stat:hover{transform:translateY(-2px);border-color:rgba(216,181,87,.28)}
-#homeScreen .v10-grid{gap:16px}
-#homeScreen .v10-panel{background:linear-gradient(145deg,#101112,#0c0d0e);border:1px solid rgba(255,255,255,.075);box-shadow:0 14px 38px rgba(0,0,0,.18)}
-#homeScreen .v10-mini-goal{padding:16px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
-#homeScreen .v10-mini-bar{height:7px;margin-top:10px}
-@media(max-width:700px){#homeScreen .v10-hero{min-height:180px}#homeScreen .v10-summary{gap:10px}}
-</style></head>
+</head>
 <body>
 <div id="splash"><div class="splash-inner"><img id="mtSplashLogo" class="mt-logo-img splash-logo-img" alt="MT Logo"><div class="splash-text">Yükleniyor…</div></div></div>
 <section id="loginView" class="login-wrap">
@@ -137,7 +127,7 @@ body{background:
   <div id="loginBox">
    <img id="mtLoginLogo" class="mt-logo-img login-logo-img" alt="MT Logo"><h1>Birikim Hedefi</h1><p>Kişisel hedeflerinize giriş yapın.</p>
    <label>Kullanıcı adı</label><input id="loginUser" class="input" autocomplete="username" placeholder="Kullanıcı adınız">
-   <label>Şifre</label><input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••">
+   <label>Şifre</label><input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••" minlength="6">
    <button class="btn full" onclick="login()">Giriş Yap</button><div id="loginMsg" class="msg"></div>
   </div>
  </div>
@@ -192,7 +182,7 @@ body{background:
  <div class="admin-grid">
   <div class="card"><h2 class="admin-title">Yeni Kullanıcı</h2><div class="muted">Geçici şifreyle kullanıcı oluşturun. Kullanıcı ilk girişte kendi şifresini belirler.</div>
    <label>Kullanıcı adı</label><input id="newUser" class="input" placeholder="örn. mete">
-   <label>Geçici şifre</label><input id="newPass" class="input" type="password" placeholder="En az 8 karakter" minlength="6">
+   <label>Geçici şifre</label><input id="newPass" class="input" type="password" placeholder="En az 6 karakter" minlength="6">
    <button class="btn full" onclick="addUser()">Kullanıcı Ekle</button><div id="adminMsg" class="msg"></div>
    <div class="privacy">🔒 Yönetici panelinde kullanıcıların hedefleri, birikimleri ve işlem geçmişleri görüntülenmez.</div>
   </div>
@@ -232,18 +222,18 @@ body{background:
  <div class="modal-actions"><button class="btn secondary" onclick="closeMoney()">Vazgeç</button><button class="btn" onclick="saveMoney()">Kaydet</button></div></div></div>
 
 <div id="passModal" class="modal-bg hidden"><div class="modal"><h3>Şifre Değiştir</h3><p id="passDesc"></p>
- <label>Geçici şifre</label><input id="resetPass" class="input" type="password" placeholder="En az 8 karakter" minlength="6">
+ <label>Geçici şifre</label><input id="resetPass" class="input" type="password" placeholder="En az 6 karakter" minlength="6">
  <div class="modal-actions"><button class="btn secondary" onclick="closePass()">Vazgeç</button><button class="btn" onclick="savePass()">Değiştir</button></div></div></div>
 
 <div id="firstPassModal" class="modal-bg hidden"><div class="modal"><h3>🔐 Kendi Şifrenizi Belirleyin</h3><p>Geçici şifreyle giriş yaptınız. Devam etmek için yalnızca sizin bileceğiniz yeni bir şifre oluşturun.</p>
- <label>Yeni şifre</label><input id="firstPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter" minlength="6">
+ <label>Yeni şifre</label><input id="firstPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 6 karakter" minlength="6">
  <label>Yeni şifre tekrar</label><input id="firstPass2" class="input" type="password" autocomplete="new-password" placeholder="Şifreyi tekrar girin" minlength="6">
  <div id="firstPassMsg" class="msg"></div>
  <div class="modal-actions"><button class="btn secondary" onclick="logoutFromFirstPass()">Çıkış</button><button class="btn" onclick="saveFirstPass()">Şifremi Kaydet</button></div></div></div>
 
 <div id="ownPassModal" class="modal-bg hidden"><div class="modal"><h3>Şifremi Değiştir</h3><p>Güvenlik için önce mevcut şifrenizi doğrulayın.</p>
  <label>Mevcut şifre</label><input id="ownOldPass" class="input" type="password" autocomplete="current-password" minlength="6">
- <label>Yeni şifre</label><input id="ownNewPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter" minlength="6">
+ <label>Yeni şifre</label><input id="ownNewPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 6 karakter" minlength="6">
  <label>Yeni şifre tekrar</label><input id="ownNewPass2" class="input" type="password" autocomplete="new-password" minlength="6">
  <div id="ownPassMsg" class="msg"></div>
  <div class="modal-actions"><button class="btn secondary" onclick="closeOwnPass()">Vazgeç</button><button class="btn" onclick="saveOwnPass()">Şifreyi Değiştir</button></div></div></div>
@@ -268,9 +258,6 @@ const firebaseConfig = {
   appId: "1:371414588055:web:7fe54e5a9e693c806ee7d2"
 };
 firebase.initializeApp(firebaseConfig);
-try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
- .catch(e=>console.warn('Session persistence:',e)); }catch(e){}
-
 const fbAuth=firebase.auth();
 const fbDb=firebase.firestore();
 let cloudReady=false, cloudUid=null, cloudCache=null;
@@ -390,11 +377,9 @@ function showInitialScreen(){
   $('loginBox').classList.remove('hidden');
 }
 async function createAdmin(){
- if(!mtPasswordMin6(n))return;
- if(!mtPasswordMin6(cred))return;
   let n=$('setupUser').value.trim(),p=$('setupPass').value,p2=$('setupPass2').value,m=$('setupMsg');
   if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}
-  if(p.length<8){m.textContent='Yönetici şifresi en az 8 karakter olmalı.';return}
+  if(p.length<6){m.textContent='Yönetici şifresi en az 6 karakter olmalı.';return}
   if(p!==p2){m.textContent='Şifreler eşleşmiyor.';return}
   m.textContent='Yönetici bulutta oluşturuluyor...';
   try{
@@ -414,7 +399,7 @@ async function createAdmin(){
   }
 }
 // Firebase oturumunu tarayıcı kapansa/yenilense de yerel olarak koru.
-try{fbAuth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(console.error)}catch(e){console.error(e)}
+try{fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(console.error)}catch(e){console.error(e)}
 
 let authBootFinished=false;
 async function restoreFirebaseSession(user){
@@ -481,10 +466,9 @@ fbAuth.onAuthStateChanged(async user=>{
 });
 
 async function login(){
- if(!mtPasswordMin6(u))return;
- if(!mtPasswordMin6(cred))return;
  let u=$('loginUser').value.trim(),p=$('loginPass').value;
  if(!u||!p){$('loginMsg').textContent='Kullanıcı adı ve şifre girin.';return}
+ if(p.length<6){$('loginMsg').textContent='Şifre en az 6 karakter olmalı.';return}
  $('loginMsg').textContent='Giriş yapılıyor...';
  try{
    const cred=await fbAuth.signInWithEmailAndPassword(cloudEmail(u),p);
@@ -516,11 +500,9 @@ $('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
 
 function renderAdmin(){let list=users().filter(x=>x.role!=='admin');$('userCount').textContent=list.length+' kullanıcı';$('users').innerHTML=list.length?list.map(u=>`<div class="user-row"><div><div class="user-name">${esc(u.username)}</div><div class="user-meta">${u.active?'Aktif':'Pasif'} hesap</div></div><div class="row-actions"><button class="btn small secondary" onclick="toggleUser('${js(u.username)}')">${u.active?'Pasife Al':'Aktif Et'}</button><button class="btn small secondary" onclick="openPass('${js(u.username)}')">Şifre</button><button class="btn small danger" onclick="deleteUser('${js(u.username)}')">Sil</button></div></div>`).join(''):'<div class="empty"><b>Henüz kullanıcı yok</b>Soldaki formdan kullanıcı ekleyebilirsiniz.</div>'}
 async function addUser(){
- if(!mtPasswordMin6(n))return;
- if(!mtPasswordMin6(newCred))return;
  let n=$('newUser').value.trim(),p=$('newPass').value,m=$('adminMsg');
  if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}
- if(p.length<8){m.textContent='Geçici şifre en az 8 karakter olmalı.';return}
+ if(p.length<6){m.textContent='Geçici şifre en az 6 karakter olmalı.';return}
  let us=users();if(us.some(x=>x.username.toLowerCase()===n.toLowerCase())){m.textContent='Bu kullanıcı adı zaten var.';return}
  m.textContent='Bulut hesabı oluşturuluyor...';
  try{
@@ -565,17 +547,17 @@ async function deleteUser(n){if(!confirm(n+' kullanıcısını yönetici listesi
 function openPass(n){resetUser=n;$('passDesc').textContent=n+' kullanıcısı için geçici şifre belirleyin. Kullanıcı sonraki girişte kendi şifresini oluşturacak.';$('resetPass').value='';$('passModal').classList.remove('hidden')}
 function closePass(){$('passModal').classList.add('hidden')}
 function savePass(){
- if(!mtPasswordMin6(p))return;let p=$('resetPass').value;if(p.length<8){alert('Geçici şifre en az 8 karakter olmalı.');return}let us=users(),u=us.find(x=>x.username===resetUser);if(u){u.password=p;u.mustChangePassword=true;saveUsers(us)}closePass()}
+ let p=$('resetPass').value;if(p.length<6){alert('Geçici şifre en az 6 karakter olmalı.');return}let us=users(),u=us.find(x=>x.username===resetUser);if(u){u.password=p;u.mustChangePassword=true;saveUsers(us)}closePass()}
 
 
 function logoutFromFirstPass(){session=null;$('firstPassModal').classList.add('hidden');$('loginView').classList.remove('hidden');$('loginPass').value=''}
-function saveFirstPass(){let p1=$('firstPass1').value,p2=$('firstPass2').value,m=$('firstPassMsg');if(p1.length<8){m.textContent='Yeni şifre en az 8 karakter olmalı.';return}if(p1!==p2){m.textContent='Şifreler eşleşmiyor.';return}if(p1===session.password){m.textContent='Geçici şifreden farklı bir şifre belirleyin.';return}let us=users(),u=us.find(x=>x.username===session.username);if(!u)return;u.password=p1;u.mustChangePassword=false;saveUsers(us);session=u;$('firstPassModal').classList.add('hidden');$('userView').classList.remove('hidden');$('hello').textContent=`Hoş geldin, ${u.username}`;renderUser()}
+function saveFirstPass(){let p1=$('firstPass1').value,p2=$('firstPass2').value,m=$('firstPassMsg');if(p1.length<6){m.textContent='Yeni şifre en az 6 karakter olmalı.';return}if(p1!==p2){m.textContent='Şifreler eşleşmiyor.';return}if(p1===session.password){m.textContent='Geçici şifreden farklı bir şifre belirleyin.';return}let us=users(),u=us.find(x=>x.username===session.username);if(!u)return;u.password=p1;u.mustChangePassword=false;saveUsers(us);session=u;$('firstPassModal').classList.add('hidden');$('userView').classList.remove('hidden');$('hello').textContent=`Hoş geldin, ${u.username}`;renderUser()}
 function openOwnPass(){$('ownOldPass').value='';$('ownNewPass1').value='';$('ownNewPass2').value='';$('ownPassMsg').textContent='';$('ownPassModal').classList.remove('hidden')}
 function closeOwnPass(){$('ownPassModal').classList.add('hidden')}
 async function saveOwnPass(){
- if(!mtPasswordMin6(old))return;
  let old=$('ownOldPass').value,p1=$('ownNewPass1').value,p2=$('ownNewPass2').value,m=$('ownPassMsg');
- if(p1.length<8){m.textContent='Yeni şifre en az 8 karakter olmalı.';return}
+ if(old.length<6){m.textContent='Mevcut şifre en az 6 karakter olmalı.';return}
+ if(p1.length<6){m.textContent='Yeni şifre en az 6 karakter olmalı.';return}
  if(p1!==p2){m.textContent='Yeni şifreler eşleşmiyor.';return}
  if(p1===old){m.textContent='Yeni şifre mevcut şifreden farklı olmalı.';return}
  if(cloudReady&&fbAuth.currentUser){
@@ -897,7 +879,7 @@ function v10Dashboard(d){
  if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{
  let portfolio=(Number(d.cash)||0)+(d.goals||[]).reduce((z,x)=>z+(Number(x.saved)||0),0)+(d.assets||[]).reduce((z,x)=>z+(Number(x.amount)||0)*(Number(x.price)||0),0);
  let target=Number(g.target)||0,p=target?Math.min(100,portfolio/target*100):0,remain=Math.max(0,target-portfolio),left=Math.max(0,100-p);
- return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>Hedef: ${fmt(target)} • Kalan: ${fmt(remain)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div><small style="display:flex;justify-content:space-between;margin-top:6px"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>%${left.toFixed(1).replace('.',',')} kaldı</span></small></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
+ return `<div class="v10-mini-goal"><div style="display:flex;justify-content:space-between;gap:14px;align-items:center"><div style="min-width:0;flex:1"><strong>${esc(g.name)}</strong><small style="display:block;margin-top:4px">Hedef: ${fmt(target)}</small><small style="display:block;margin-top:3px">Toplam varlığım: ${fmt(portfolio)}</small><small style="display:block;margin-top:3px">Hedefime kalan: ${fmt(remain)}</small></div><div style="width:76px;height:76px;border-radius:50%;background:conic-gradient(#d8b557 0 ${p}%,rgba(255,255,255,.08) ${p}% 100%);display:grid;place-items:center;flex:0 0 76px"><div style="width:58px;height:58px;border-radius:50%;background:#101827;display:grid;place-items:center;font-size:12px;font-weight:800">%${p.toFixed(1).replace('.',',')}</div></div></div><div class="v10-mini-bar" style="margin-top:10px"><i style="width:${p}%"></i></div><small style="display:flex;justify-content:space-between;margin-top:6px"><span>Tamamlanan %${p.toFixed(1).replace('.',',')}</span><span>Kalan %${left.toFixed(1).replace('.',',')}</span></small></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
  if($('donutTotal'))$('donutTotal').textContent=fmt(total); let pl=(d.assets||[]).reduce((t,a)=>t+assetPL(a),0);if($('sPL')){$('sPL').textContent=(pl>=0?'+':'-')+fmt(Math.abs(pl));$('sPL').className=pl>=0?'profit':'loss'};
  if($('goldTotalMini'))$('goldTotalMini').textContent=fmt(gold);
  if($('fxTotalMini'))$('fxTotalMini').textContent=fmt(fx);
