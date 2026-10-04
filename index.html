@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v13.4 MT Logo Fix</title>
+<title>Birikim Hedefi • v13.5 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -137,7 +137,7 @@ body{background:
   <div id="loginBox">
    <img id="mtLoginLogo" class="mt-logo-img login-logo-img" alt="MT Logo"><h1>Birikim Hedefi</h1><p>Kişisel hedeflerinize giriş yapın.</p>
    <label>Kullanıcı adı</label><input id="loginUser" class="input" autocomplete="username" placeholder="Kullanıcı adınız">
-   <label>Şifre</label><input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••" minlength="6">
+   <label>Şifre</label><input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••">
    <button class="btn full" onclick="login()">Giriş Yap</button><div id="loginMsg" class="msg"></div>
   </div>
  </div>
@@ -956,32 +956,30 @@ function exportPDF(){let d=privateData(session.username),p=portfolioParts(d),sna
 window.addEventListener('load',()=>{setTimeout(()=>{let sp=document.getElementById('splash');if(sp){sp.style.opacity='0';setTimeout(()=>sp.remove(),360)}},650)});
 </script>
 
-<script id="v134-password-guard">
+<script id="v135-new-password-only">
 (function(){
- function checkPasswordField(el){
-   if(!el || el.type!=='password') return true;
+ function isLoginPassword(el){
+   const x=((el.id||'')+' '+(el.name||'')+' '+(el.placeholder||'')).toLowerCase();
+   return x.includes('login') || x==='password' || x.includes('giriş') || x.includes('giris');
+ }
+ function isNewPassword(el){
+   if(!el || el.type!=='password' || isLoginPassword(el)) return false;
+   const x=((el.id||'')+' '+(el.name||'')+' '+(el.placeholder||'')).toLowerCase();
+   return x.includes('new') || x.includes('yeni') || x.includes('pass') || x.includes('şifre') || x.includes('sifre');
+ }
+ function valid(el){
+   if(!isNewPassword(el)) return true;
    if(String(el.value||'').length<6){
-     alert('Şifre en az 6 karakter olmalıdır.');
-     el.focus();
-     return false;
+     alert('Yeni şifre en az 6 karakter olmalıdır.');
+     el.focus(); return false;
    }
    return true;
  }
  document.addEventListener('click',function(e){
-   const btn=e.target.closest('button');
-   if(!btn)return;
-   const box=btn.closest('.modal,.login-card,.auth-card,.card,form')||document;
-   const fields=[...box.querySelectorAll('input[type="password"]')].filter(x=>x.offsetParent!==null);
-   if(fields.length && !fields.every(checkPasswordField)){
-     e.preventDefault(); e.stopImmediatePropagation();
-   }
- },true);
- document.addEventListener('keydown',function(e){
-   if(e.key!=='Enter')return;
-   const el=document.activeElement;
-   if(el && el.type==='password' && !checkPasswordField(el)){
-     e.preventDefault(); e.stopImmediatePropagation();
-   }
+   const b=e.target.closest('button'); if(!b)return;
+   const box=b.closest('.modal,.card,form')||document;
+   const fields=[...box.querySelectorAll('input[type="password"]')].filter(x=>x.offsetParent!==null && isNewPassword(x));
+   if(fields.length && !fields.every(valid)){e.preventDefault();e.stopImmediatePropagation();}
  },true);
 })();
 </script>
