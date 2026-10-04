@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090d18">
-<title>Birikim Hedefi • v13.2 MT Logo Fix</title>
+<title>Birikim Hedefi • v12.7 MT Logo Fix</title>
 <style>
 :root{--bg:#070b13;--panel:#101827;--panel2:#151f31;--line:#24314a;--text:#f5f7fb;--muted:#93a1b8;--accent:#7d9cff;--green:#58dfad;--red:#ff7383;--yellow:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(circle at 15% 0%,rgba(125,156,255,.16),transparent 27%),radial-gradient(circle at 95% 8%,rgba(88,223,173,.09),transparent 25%),var(--bg);color:var(--text);min-height:100vh}
@@ -182,7 +182,7 @@ body{background:
  <div class="admin-grid">
   <div class="card"><h2 class="admin-title">Yeni Kullanıcı</h2><div class="muted">Geçici şifreyle kullanıcı oluşturun. Kullanıcı ilk girişte kendi şifresini belirler.</div>
    <label>Kullanıcı adı</label><input id="newUser" class="input" placeholder="örn. mete">
-   <label>Geçici şifre</label><input id="newPass" class="input" type="password" placeholder="En az 6 karakter" minlength="6">
+   <label>Geçici şifre</label><input id="newPass" class="input" type="password" placeholder="En az 8 karakter">
    <button class="btn full" onclick="addUser()">Kullanıcı Ekle</button><div id="adminMsg" class="msg"></div>
    <div class="privacy">🔒 Yönetici panelinde kullanıcıların hedefleri, birikimleri ve işlem geçmişleri görüntülenmez.</div>
   </div>
@@ -199,7 +199,6 @@ body{background:
 <div id="assetModal" class="modal-bg hidden"><div class="modal"><h3 id="assetModalTitle">🥇 Altın Ekle</h3><p id="assetModalDesc">Altın miktarınızı ve birim fiyatını girin.</p>
  <label id="aTypeLabel">Altın türü</label><select id="aType" class="input"></select>
  <label>Miktar / Adet</label><input id="aAmount" class="input" inputmode="decimal" placeholder="Örn. 25">
- <label>Hedef miktar / adet (isteğe bağlı)</label><input id="aTarget" class="input" inputmode="decimal" placeholder="Örn. 100"> <div class="muted" style="margin-top:6px;font-size:11px">Bu varlık için ulaşmak istediğiniz miktarı yazın.</div>
  <label>Birim fiyat / kur (TL)</label><input id="aPrice" class="input" inputmode="decimal" placeholder="Örn. 3.250,00"><div class="muted" style="margin-top:6px;font-size:11px">USD/EUR/GBP ile Has, 24/22/18/14 ayar gram bazlı altınlar internete bağlıyken otomatik güncellenir. Ziynet altınlarında piyasa primi nedeniyle manuel fiyat kullanılır.</div>
  <label>Not (isteğe bağlı)</label><input id="aNote" class="input" placeholder="Örn. Fiziki altın">
  <div id="assetMsg" class="msg"></div><div class="modal-actions"><button class="btn secondary" onclick="closeAsset()">Vazgeç</button><button class="btn" onclick="saveAsset()">Kaydet</button></div></div></div>
@@ -222,19 +221,19 @@ body{background:
  <div class="modal-actions"><button class="btn secondary" onclick="closeMoney()">Vazgeç</button><button class="btn" onclick="saveMoney()">Kaydet</button></div></div></div>
 
 <div id="passModal" class="modal-bg hidden"><div class="modal"><h3>Şifre Değiştir</h3><p id="passDesc"></p>
- <label>Geçici şifre</label><input id="resetPass" class="input" type="password" placeholder="En az 6 karakter" minlength="6">
+ <label>Geçici şifre</label><input id="resetPass" class="input" type="password" placeholder="En az 8 karakter">
  <div class="modal-actions"><button class="btn secondary" onclick="closePass()">Vazgeç</button><button class="btn" onclick="savePass()">Değiştir</button></div></div></div>
 
 <div id="firstPassModal" class="modal-bg hidden"><div class="modal"><h3>🔐 Kendi Şifrenizi Belirleyin</h3><p>Geçici şifreyle giriş yaptınız. Devam etmek için yalnızca sizin bileceğiniz yeni bir şifre oluşturun.</p>
- <label>Yeni şifre</label><input id="firstPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 6 karakter" minlength="6">
- <label>Yeni şifre tekrar</label><input id="firstPass2" class="input" type="password" autocomplete="new-password" placeholder="Şifreyi tekrar girin" minlength="6">
+ <label>Yeni şifre</label><input id="firstPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter">
+ <label>Yeni şifre tekrar</label><input id="firstPass2" class="input" type="password" autocomplete="new-password" placeholder="Şifreyi tekrar girin">
  <div id="firstPassMsg" class="msg"></div>
  <div class="modal-actions"><button class="btn secondary" onclick="logoutFromFirstPass()">Çıkış</button><button class="btn" onclick="saveFirstPass()">Şifremi Kaydet</button></div></div></div>
 
 <div id="ownPassModal" class="modal-bg hidden"><div class="modal"><h3>Şifremi Değiştir</h3><p>Güvenlik için önce mevcut şifrenizi doğrulayın.</p>
  <label>Mevcut şifre</label><input id="ownOldPass" class="input" type="password" autocomplete="current-password">
- <label>Yeni şifre</label><input id="ownNewPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 6 karakter" minlength="6">
- <label>Yeni şifre tekrar</label><input id="ownNewPass2" class="input" type="password" autocomplete="new-password" minlength="6">
+ <label>Yeni şifre</label><input id="ownNewPass1" class="input" type="password" autocomplete="new-password" placeholder="En az 8 karakter">
+ <label>Yeni şifre tekrar</label><input id="ownNewPass2" class="input" type="password" autocomplete="new-password">
  <div id="ownPassMsg" class="msg"></div>
  <div class="modal-actions"><button class="btn secondary" onclick="closeOwnPass()">Vazgeç</button><button class="btn" onclick="saveOwnPass()">Şifreyi Değiştir</button></div></div></div>
 
@@ -355,30 +354,13 @@ function savePrivate(u,v){
 function moneyVal(v){v=String(v??'').trim().replace(/\s/g,'').replace(/₺/g,'');if(!v)return 0;if(v.includes(',')&&v.includes('.'))v=v.replace(/\./g,'').replace(',','.');else if(v.includes(','))v=v.replace(',','.');return Number(v)||0}
 function formatMoneyInput(el){let n=moneyVal(el.value);if(el.value.trim()!==''&&!isNaN(n))el.value=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}
 
-
-function liveThousands(el){
- let raw=String(el.value||'').replace(/\./g,'').replace(/[^\d,]/g,'');
- let parts=raw.split(','),whole=parts.shift()||'';
- whole=whole.replace(/^0+(?=\d)/,'').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
- el.value=whole+(parts.length?','+parts.join('').slice(0,2):'');
-}
-const LIVE_MONEY_IDS=new Set(['cashAmount','gTarget','gStart','gMonthly','moneyAmount','egTarget','egMonthly','editTxAmount','aPrice']);
-document.addEventListener('input',function(e){
- if(e.target&&LIVE_MONEY_IDS.has(e.target.id))liveThousands(e.target);
-});
-
-
-function mtPasswordMin6(value){
- if(String(value||'').length<6){alert('Şifre en az 6 karakter olmalıdır.');return false}
- return true
-}
-
 function showInitialScreen(){
   $('loginBox').classList.remove('hidden');
 }
-async function createAdmin(){  let n=$('setupUser').value.trim(),p=$('setupPass').value,p2=$('setupPass2').value,m=$('setupMsg');
+async function createAdmin(){
+  let n=$('setupUser').value.trim(),p=$('setupPass').value,p2=$('setupPass2').value,m=$('setupMsg');
   if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}
-  if(p.length<6){m.textContent='Yönetici şifresi en az 6 karakter olmalı.';return}
+  if(p.length<8){m.textContent='Yönetici şifresi en az 8 karakter olmalı.';return}
   if(p!==p2){m.textContent='Şifreler eşleşmiyor.';return}
   m.textContent='Yönetici bulutta oluşturuluyor...';
   try{
@@ -464,7 +446,8 @@ fbAuth.onAuthStateChanged(async user=>{
   if(user&&session){localStorage.setItem(LAST_ACTIVITY_KEY,String(Date.now()));armIdleTimer();}
 });
 
-async function login(){  let u=$('loginUser').value.trim(),p=$('loginPass').value;
+async function login(){
+ let u=$('loginUser').value.trim(),p=$('loginPass').value;
  if(!u||!p){$('loginMsg').textContent='Kullanıcı adı ve şifre girin.';return}
  $('loginMsg').textContent='Giriş yapılıyor...';
  try{
@@ -496,9 +479,10 @@ function logout(){clearTimeout(idleTimer);idleTimer=null;localStorage.removeItem
 $('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
 
 function renderAdmin(){let list=users().filter(x=>x.role!=='admin');$('userCount').textContent=list.length+' kullanıcı';$('users').innerHTML=list.length?list.map(u=>`<div class="user-row"><div><div class="user-name">${esc(u.username)}</div><div class="user-meta">${u.active?'Aktif':'Pasif'} hesap</div></div><div class="row-actions"><button class="btn small secondary" onclick="toggleUser('${js(u.username)}')">${u.active?'Pasife Al':'Aktif Et'}</button><button class="btn small secondary" onclick="openPass('${js(u.username)}')">Şifre</button><button class="btn small danger" onclick="deleteUser('${js(u.username)}')">Sil</button></div></div>`).join(''):'<div class="empty"><b>Henüz kullanıcı yok</b>Soldaki formdan kullanıcı ekleyebilirsiniz.</div>'}
-async function addUser(){  let n=$('newUser').value.trim(),p=$('newPass').value,m=$('adminMsg');
+async function addUser(){
+ let n=$('newUser').value.trim(),p=$('newPass').value,m=$('adminMsg');
  if(n.length<3){m.textContent='Kullanıcı adı en az 3 karakter olmalı.';return}
- if(p.length<6){m.textContent='Geçici şifre en az 6 karakter olmalı.';return}
+ if(p.length<8){m.textContent='Geçici şifre en az 8 karakter olmalı.';return}
  let us=users();if(us.some(x=>x.username.toLowerCase()===n.toLowerCase())){m.textContent='Bu kullanıcı adı zaten var.';return}
  m.textContent='Bulut hesabı oluşturuluyor...';
  try{
@@ -542,15 +526,16 @@ async function toggleUser(n){let us=users(),u=us.find(x=>x.username===n);if(u){u
 async function deleteUser(n){if(!confirm(n+' kullanıcısını yönetici listesinden kaldırmak istiyor musunuz? Finansal kayıtlar yöneticiye gösterilmez.'))return;saveUsers(users().filter(x=>x.username!==n));await saveAdminDirectory();renderAdmin()}
 function openPass(n){resetUser=n;$('passDesc').textContent=n+' kullanıcısı için geçici şifre belirleyin. Kullanıcı sonraki girişte kendi şifresini oluşturacak.';$('resetPass').value='';$('passModal').classList.remove('hidden')}
 function closePass(){$('passModal').classList.add('hidden')}
-function savePass(){ let p=$('resetPass').value;if(p.length<6){alert('Geçici şifre en az 6 karakter olmalı.');return}let us=users(),u=us.find(x=>x.username===resetUser);if(u){u.password=p;u.mustChangePassword=true;saveUsers(us)}closePass()}
+function savePass(){let p=$('resetPass').value;if(p.length<8){alert('Geçici şifre en az 8 karakter olmalı.');return}let us=users(),u=us.find(x=>x.username===resetUser);if(u){u.password=p;u.mustChangePassword=true;saveUsers(us)}closePass()}
 
 
 function logoutFromFirstPass(){session=null;$('firstPassModal').classList.add('hidden');$('loginView').classList.remove('hidden');$('loginPass').value=''}
-function saveFirstPass(){let p1=$('firstPass1').value,p2=$('firstPass2').value,m=$('firstPassMsg');if(p1.length<6){m.textContent='Yeni şifre en az 6 karakter olmalı.';return}if(p1!==p2){m.textContent='Şifreler eşleşmiyor.';return}if(p1===session.password){m.textContent='Geçici şifreden farklı bir şifre belirleyin.';return}let us=users(),u=us.find(x=>x.username===session.username);if(!u)return;u.password=p1;u.mustChangePassword=false;saveUsers(us);session=u;$('firstPassModal').classList.add('hidden');$('userView').classList.remove('hidden');$('hello').textContent=`Hoş geldin, ${u.username}`;renderUser()}
+function saveFirstPass(){let p1=$('firstPass1').value,p2=$('firstPass2').value,m=$('firstPassMsg');if(p1.length<8){m.textContent='Yeni şifre en az 8 karakter olmalı.';return}if(p1!==p2){m.textContent='Şifreler eşleşmiyor.';return}if(p1===session.password){m.textContent='Geçici şifreden farklı bir şifre belirleyin.';return}let us=users(),u=us.find(x=>x.username===session.username);if(!u)return;u.password=p1;u.mustChangePassword=false;saveUsers(us);session=u;$('firstPassModal').classList.add('hidden');$('userView').classList.remove('hidden');$('hello').textContent=`Hoş geldin, ${u.username}`;renderUser()}
 function openOwnPass(){$('ownOldPass').value='';$('ownNewPass1').value='';$('ownNewPass2').value='';$('ownPassMsg').textContent='';$('ownPassModal').classList.remove('hidden')}
 function closeOwnPass(){$('ownPassModal').classList.add('hidden')}
-async function saveOwnPass(){ let old=$('ownOldPass').value,p1=$('ownNewPass1').value,p2=$('ownNewPass2').value,m=$('ownPassMsg');
- if(p1.length<6){m.textContent='Yeni şifre en az 6 karakter olmalı.';return}
+async function saveOwnPass(){
+ let old=$('ownOldPass').value,p1=$('ownNewPass1').value,p2=$('ownNewPass2').value,m=$('ownPassMsg');
+ if(p1.length<8){m.textContent='Yeni şifre en az 8 karakter olmalı.';return}
  if(p1!==p2){m.textContent='Yeni şifreler eşleşmiyor.';return}
  if(p1===old){m.textContent='Yeni şifre mevcut şifreden farklı olmalı.';return}
  if(cloudReady&&fbAuth.currentUser){
@@ -573,30 +558,8 @@ function renderUser(){syncMobileNav();let d=privateData(session.username),saved=
 let golds=d.assets.filter(a=>isGold(a.type)),fxs=d.assets.filter(a=>isFx(a.type));
 $('goldAssets').innerHTML=golds.length?golds.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz altın eklenmedi</b>Gram, çeyrek, yarım veya tam altın ekleyebilirsiniz.</div>';
 $('fxAssets').innerHTML=fxs.length?fxs.map(assetCard).join(''):'<div class="card empty" style="grid-column:1/-1"><b>Henüz döviz eklenmedi</b>Dolar, Euro veya Sterlin ekleyebilirsiniz.</div>';
-$('goals').innerHTML=d.goals.length?d.goals.map(g=>{
- let portfolio=(Number(d.cash)||0)+(d.goals||[]).reduce((z,x)=>z+(Number(x.saved)||0),0)+(d.assets||[]).reduce((z,x)=>z+(Number(x.amount)||0)*(Number(x.price)||0),0);
- let target=Number(g.target)||0,used=Math.min(portfolio,target),remain=Math.max(0,target-portfolio),p=target?Math.min(100,portfolio/target*100):0,left=Math.max(0,100-p);
- return `<div class="card">
- <div class="goal-title">${esc(g.name)}</div><div class="goal-sub">Hedef: ${fmt(target)}</div>
- <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px">
-  <div><small>Toplam varlığım</small><b style="display:block;margin-top:3px">${fmt(portfolio)}</b></div>
-  <div><small>Hedefime kalan</small><b style="display:block;margin-top:3px">${fmt(remain)}</b></div>
-  <div><small>Tamamlanan</small><b style="display:block;margin-top:3px">%${p.toFixed(1).replace('.',',')}</b></div>
-  <div><small>Kalan</small><b style="display:block;margin-top:3px">%${left.toFixed(1).replace('.',',')}</b></div>
- </div>
- <div class="bar" style="margin-top:14px"><div class="fill" style="width:${p}%"></div></div>
- <div style="margin-top:12px">
-  <div style="display:flex;height:28px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.06)" title="Hedef ilerleme grafiği">
-   <span style="width:${p}%;background:linear-gradient(90deg,#a87918,#f1d071)"></span>
-   <span style="width:${left}%;background:rgba(255,255,255,.08)"></span>
-  </div>
-  <div class="goal-bottom"><span>● Biriken ${fmt(used)}</span><span>○ Kalan ${fmt(remain)}</span></div>
- </div>
- <div class="goal-actions"><button class="btn small" onclick="openMoney('${g.id}','add')">+ Para Ekle</button><button class="btn small secondary" onclick="openMoney('${g.id}','sub')">Para Çıkar</button><button class="btn small secondary" onclick="openEditGoal('${g.id}')">Hedefi Düzenle</button><button class="btn small danger" onclick="removeGoal('${g.id}')">Hedefi Sil</button></div>
- </div>`}).join(''):'<div class="card empty" style="grid-column:1/-1"><b>İlk hedefini oluştur</b>Araba, ev, tatil veya istediğin başka bir şey için birikmeye başla.</div>';
+$('goals').innerHTML=d.goals.length?d.goals.map(g=>{let p=Math.min(100,g.saved/g.target*100),months=g.monthly>0?Math.ceil(Math.max(0,g.target-g.saved)/g.monthly):null;return `<div class="card"><div class="goal-title">${esc(g.name)}</div><div class="goal-sub">${months===0?'🎉 Hedef tamamlandı':months?`⏳ Tahmini tamamlanmasına <b style="color:var(--text)">${months} ay</b> var`:'⏳ Aylık plan belirlenmedi'}</div><div class="money-row"><span>${fmt(g.saved)}</span><span>${fmt(g.target)}</span></div><div class="bar"><div class="fill" style="width:${p}%"></div></div><div class="goal-bottom"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>Aylık: ${fmt(g.monthly)}</span></div><div class="goal-actions"><button class="btn small" onclick="openMoney('${g.id}','add')">+ Para Ekle</button><button class="btn small secondary" onclick="openMoney('${g.id}','sub')">Para Çıkar</button><button class="btn small secondary" onclick="openEditGoal('${g.id}')">Hedefi Düzenle</button><button class="btn small danger" onclick="removeGoal('${g.id}')">Hedefi Sil</button></div></div>`}).join(''):'<div class="card empty" style="grid-column:1/-1"><b>İlk hedefini oluştur</b>Araba, ev, tatil veya istediğin başka bir şey için birikmeye başla.</div>';
 $('history').innerHTML=d.history.length?d.history.slice(0,30).map(h=>`<div class="hist"><div><b>${esc(h.goal)}</b><small>${esc(h.note||'İşlem')} • ${new Date(h.date).toLocaleString('tr-TR')}</small></div><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end"><b class="${h.type==='add'?'plus':'minus'}">${h.type==='add'?'+':'-'}${fmt(h.amount)}</b>${h.locked||h.kind==='system'?'':`<button class="btn small secondary" onclick="openEditTx('${js(h.id)}')">Düzenle</button><button class="btn small danger" onclick="deleteTx('${js(h.id)}')">Sil</button>`}</div></div>`).join(''):'<div class="card empty"><b>Henüz işlem yok</b>Bir hedefe para eklediğinizde burada görünür.</div>';v10Dashboard(d);recordDailySnapshot(d);renderAnalytics(d)}
-
-
 
 function txGoal(d,h){return h.goalId?d.goals.find(g=>g.id===h.goalId):d.goals.find(g=>g.name===h.goal)}
 function reverseTx(d,h){
@@ -624,11 +587,7 @@ function saveEditGoal(){let d=privateData(session.username),g=d.goals.find(x=>x.
 function isGold(t){return String(t).toLowerCase().includes('altın')}
 function isFx(t){return ['USD','EUR','GBP'].includes(t)}
 function goldPurity(t){if(['Has Altın','24 Ayar Gram Altın','Gram Altın'].includes(t))return 1;if(['22 Ayar Altın','22 Ayar Bilezik'].includes(t))return 22/24;if(t==='18 Ayar Altın')return 18/24;if(t==='14 Ayar Altın')return 14/24;return null}
-function assetCard(a){
- let total=(Number(a.amount)||0)*(Number(a.price)||0),pl=assetPL(a),target=Number(a.targetAmount)||0,amount=Number(a.amount)||0;
- let ap=target?Math.min(100,amount/target*100):0,left=Math.max(0,target-amount),unit=assetUnit(a.type);
- let targetHtml=target?`<div style="margin-top:12px;padding-top:11px;border-top:1px solid var(--line)"><div class="goal-bottom"><span>Hedef: <b>${num(target)} ${esc(unit)}</b></span><span>Hedefime kalan: <b>${num(left)} ${esc(unit)}</b></span></div><div class="bar" style="margin-top:8px"><div class="fill" style="width:${ap}%"></div></div><div class="goal-bottom"><span>%${ap.toFixed(1).replace('.',',')} tamamlandı</span><span>%${(100-ap).toFixed(1).replace('.',',')} kaldı</span></div></div>`:'';
- return `<div class="card"><div class="goal-title">${esc(assetIcon(a.type)+' '+a.type)}</div><div class="goal-sub">${esc(a.note||'Varlık kaydı')}</div>${a.liveReference?`<div class="asset-badge" style="margin:8px 0">🌐 Canlı referans: ${fmt(a.liveReference)} / ${assetUnit(a.type)}</div>`:''}<div class="money-row"><span>${num(a.amount)} ${esc(unit)}</span><span>${fmt(total)}</span></div><div class="asset-pl ${pl>=0?'profit':'loss'}">${pl>=0?'Kâr':'Zarar'}: ${fmt(Math.abs(pl))} (${assetPLPct(a)})</div><div class="goal-bottom"><span>Maliyet: ${fmt(a.costPrice??a.price)}</span><span>Güncel: ${fmt(a.price)}</span></div>${targetHtml}<div class="goal-actions"><button class="btn small secondary" onclick="openAsset('${js(a.id)}','${isGold(a.type)?'gold':'fx'}')">Düzenle</button><button class="btn small danger" onclick="deleteAsset('${js(a.id)}')">Sil</button></div></div>`}
+function assetCard(a){let total=(Number(a.amount)||0)*(Number(a.price)||0),pl=assetPL(a);return `<div class="card"><div class="goal-title">${esc(assetIcon(a.type)+' '+a.type)}</div><div class="goal-sub">${esc(a.note||'Varlık kaydı')}</div>${a.liveReference?`<div class="asset-badge" style="margin:8px 0">🌐 Canlı referans: ${fmt(a.liveReference)} / ${assetUnit(a.type)}</div>`:''}<div class="money-row"><span>${num(a.amount)} ${esc(assetUnit(a.type))}</span><span>${fmt(total)}</span></div><div class="asset-pl ${pl>=0?'profit':'loss'}">${pl>=0?'Kâr':'Zarar'}: ${fmt(Math.abs(pl))} (${assetPLPct(a)})</div><div class="goal-bottom"><span>Maliyet: ${fmt(a.costPrice??a.price)}</span><span>Güncel: ${fmt(a.price)}</span></div><div class="goal-actions"><button class="btn small secondary" onclick="openAsset('${js(a.id)}','${isGold(a.type)?'gold':'fx'}')">Düzenle</button><button class="btn small danger" onclick="deleteAsset('${js(a.id)}')">Sil</button></div></div>`}
 function fillAssetTypes(mode,selected){
  let opts=mode==='gold'?[
  ['Has Altın','Has Altın (gr)'],
@@ -653,9 +612,9 @@ function fillAssetTypes(mode,selected){
    if(opts.some(o=>o[0]===selected))$('aType').value=selected;
  }
 }
-function openAsset(id=null,mode='gold'){editAssetId=id;let d=privateData(session.username),a=id?d.assets.find(x=>x.id===id):null;if(a)mode=isGold(a.type)?'gold':'fx';$('assetModal').dataset.mode=mode;$('assetModalTitle').textContent=a?(mode==='gold'?'🥇 Altını Düzenle':'💵 Dövizi Düzenle'):(mode==='gold'?'🥇 Altın Ekle':'💵 Döviz Ekle');$('assetModalDesc').textContent=mode==='gold'?'Altın türünü, miktar/adedi ve birim fiyatını girin.':'Döviz türünü, miktarı ve güncel/istediğiniz kuru girin.';$('aTypeLabel').textContent=mode==='gold'?'Altın türü':'Döviz türü';fillAssetTypes(mode,a?.type);$('aAmount').value=a?num(a.amount):'';$('aTarget').value=a&&Number(a.targetAmount)>0?num(a.targetAmount):'';$('aPrice').value=a?new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(a.price):'';$('aNote').value=a?.note||'';$('assetMsg').textContent='';$('assetModal').classList.remove('hidden')}
+function openAsset(id=null,mode='gold'){editAssetId=id;let d=privateData(session.username),a=id?d.assets.find(x=>x.id===id):null;if(a)mode=isGold(a.type)?'gold':'fx';$('assetModal').dataset.mode=mode;$('assetModalTitle').textContent=a?(mode==='gold'?'🥇 Altını Düzenle':'💵 Dövizi Düzenle'):(mode==='gold'?'🥇 Altın Ekle':'💵 Döviz Ekle');$('assetModalDesc').textContent=mode==='gold'?'Altın türünü, miktar/adedi ve birim fiyatını girin.':'Döviz türünü, miktarı ve güncel/istediğiniz kuru girin.';$('aTypeLabel').textContent=mode==='gold'?'Altın türü':'Döviz türü';fillAssetTypes(mode,a?.type);$('aAmount').value=a?num(a.amount):'';$('aPrice').value=a?new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(a.price):'';$('aNote').value=a?.note||'';$('assetMsg').textContent='';$('assetModal').classList.remove('hidden')}
 function closeAsset(){$('assetModal').classList.add('hidden');editAssetId=null}
-function saveAsset(){let d=privateData(session.username),type=$('aType').value,amount=moneyVal($('aAmount').value),targetAmount=Math.max(0,moneyVal($('aTarget').value)),price=moneyVal($('aPrice').value),note=$('aNote').value.trim(),m=$('assetMsg');if(!type||amount<=0||price<0){m.textContent='Miktar ve geçerli birim fiyat girin.';return}if(editAssetId){let a=d.assets.find(x=>x.id===editAssetId);if(a){a.type=type;a.amount=amount;a.targetAmount=targetAmount;if(typeof a.costPrice!=='number')a.costPrice=Number(a.price)||price;a.price=price;a.note=note;a.autoPrice=false}}else d.assets.push({id:'a'+Date.now().toString(36),type,amount,targetAmount,price,costPrice:price,note,autoPrice:false});savePrivate(session.username,d);closeAsset();renderUser()}
+function saveAsset(){let d=privateData(session.username),type=$('aType').value,amount=moneyVal($('aAmount').value),price=moneyVal($('aPrice').value),note=$('aNote').value.trim(),m=$('assetMsg');if(!type||amount<=0||price<0){m.textContent='Miktar ve geçerli birim fiyat girin.';return}if(editAssetId){let a=d.assets.find(x=>x.id===editAssetId);if(a){a.type=type;a.amount=amount;if(typeof a.costPrice!=='number')a.costPrice=Number(a.price)||price;a.price=price;a.note=note;a.autoPrice=false}}else d.assets.push({id:'a'+Date.now().toString(36),type,amount,price,costPrice:price,note,autoPrice:false});savePrivate(session.username,d);closeAsset();renderUser()}
 function deleteAsset(id){let d=privateData(session.username),a=d.assets.find(x=>x.id===id);if(!a||!confirm(a.type+' kaydını silmek istiyor musunuz?'))return;d.assets=d.assets.filter(x=>x.id!==id);savePrivate(session.username,d);renderUser()}
 
 
@@ -869,10 +828,7 @@ function v10Tab(name,btn){
 }
 function v10Dashboard(d){
  let saved=d.goals.reduce((a,g)=>a+Number(g.saved||0),0),gold=d.assets.filter(a=>isGold(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),fx=d.assets.filter(a=>isFx(a.type)).reduce((t,a)=>t+Number(a.amount||0)*Number(a.price||0),0),total=d.cash+saved+gold+fx;
- if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{
- let portfolio=(Number(d.cash)||0)+(d.goals||[]).reduce((z,x)=>z+(Number(x.saved)||0),0)+(d.assets||[]).reduce((z,x)=>z+(Number(x.amount)||0)*(Number(x.price)||0),0);
- let target=Number(g.target)||0,p=target?Math.min(100,portfolio/target*100):0,remain=Math.max(0,target-portfolio),left=Math.max(0,100-p);
- return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>Hedef: ${fmt(target)} • Kalan: ${fmt(remain)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div><small style="display:flex;justify-content:space-between;margin-top:6px"><span>%${p.toFixed(1).replace('.',',')} tamamlandı</span><span>%${left.toFixed(1).replace('.',',')} kaldı</span></small></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
+ if($('homeGoals'))$('homeGoals').innerHTML=d.goals.length?d.goals.slice(0,4).map(g=>{let p=Math.min(100,(Number(g.saved)||0)/(Number(g.target)||1)*100);return `<div class="v10-mini-goal"><strong>${esc(g.name)}</strong><small>${fmt(g.saved)} / ${fmt(g.target)}</small><div class="v10-mini-bar"><i style="width:${p}%"></i></div></div>`}).join(''):'<div class="v10-mini-goal"><strong>İlk hedefini oluştur</strong><small>Bir hedef ekleyerek başla.</small></div>';
  if($('donutTotal'))$('donutTotal').textContent=fmt(total); let pl=(d.assets||[]).reduce((t,a)=>t+assetPL(a),0);if($('sPL')){$('sPL').textContent=(pl>=0?'+':'-')+fmt(Math.abs(pl));$('sPL').className=pl>=0?'profit':'loss'};
  if($('goldTotalMini'))$('goldTotalMini').textContent=fmt(gold);
  if($('fxTotalMini'))$('fxTotalMini').textContent=fmt(fx);
